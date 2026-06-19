@@ -6,11 +6,13 @@
     <main>
       <section class="page-hero"><p class="kicker">Contact</p><h1>Start a conversation.</h1><p>Tell us what you are interested in, or use the direct contact details for a faster conversation.</p></section>
       <section class="section contact-page">
-        <form class="enquiry-form" action="#" method="post">
+        <form class="enquiry-form" name="course-enquiry" action="/thank-you.html" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+          <input type="hidden" name="form-name" value="course-enquiry">
+          <p class="form-hidden"><label>Do not fill this field<input name="bot-field"></label></p>
           <label>Name<input name="name" autocomplete="name" required></label>
           <label>Email<input type="email" name="email" autocomplete="email" required></label>
           <label>Phone<input name="phone" autocomplete="tel"></label>
-          <label>I am interested in<select name="interest"><option>Teaching & Learning</option><option>Educational Leadership</option><option>CPD Online</option><option>Certified Training</option><option>General</option></select></label>
+          <label>I am interested in<select name="course"><option>Teaching and Learning</option><option>Educational Leadership</option><option>CPD Online Programme</option><option>Certified Training programme</option><option>General enquiry</option></select></label>
           <label>Message<textarea name="message" rows="6"></textarea></label>
           <button class="button button-primary" type="submit">Send Enquiry <span aria-hidden="true">&rarr;</span></button>
         </form>

@@ -43,6 +43,12 @@ const carouselScrollButtons = document.querySelectorAll("[data-carousel-scroll]"
 const galleryScrollButtons = document.querySelectorAll("[data-gallery-scroll]");
 const writtenTestimonialsCarousel = document.querySelector("#written-testimonials");
 const learningCarousel = document.querySelector("#learning-carousel");
+const enquiryModal = document.querySelector("#course-enquiry-modal");
+const enquiryTriggers = document.querySelectorAll("[data-enquiry-course]");
+const enquiryTitle = document.querySelector("[data-enquiry-title]");
+const enquiryCourseField = document.querySelector("[data-enquiry-course-field]");
+const enquiryCourseDisplay = document.querySelector("[data-enquiry-course-display]");
+const enquiryCloseButtons = document.querySelectorAll("[data-enquiry-close]");
 let testimonialIndex = 0;
 let writtenTestimonialsTimer;
 let learningCarouselTimer;
@@ -116,7 +122,7 @@ function renderInstagramFallback() {
       <div>
         <h3>Instagram feed coming soon</h3>
         <p>Recent posts will appear here once Instagram API credentials are connected.</p>
-        <a href="https://www.instagram.com/" target="_blank" rel="noreferrer">Open Instagram</a>
+        <a href="https://www.instagram.com/rupam.sah/" target="_blank" rel="noreferrer">Open Instagram</a>
       </div>
     </article>
   `;
@@ -226,6 +232,44 @@ if (menuButton && nav) {
     }
   });
 }
+
+function openEnquiryModal(courseName) {
+  if (!enquiryModal) return false;
+
+  const selectedCourse = courseName || "General enquiry";
+  if (enquiryTitle) enquiryTitle.textContent = selectedCourse;
+  if (enquiryCourseField) enquiryCourseField.value = selectedCourse;
+  if (enquiryCourseDisplay) enquiryCourseDisplay.value = selectedCourse;
+
+  enquiryModal.hidden = false;
+  document.body.classList.add("modal-open");
+  enquiryModal.querySelector("input[name='name']")?.focus();
+  return true;
+}
+
+function closeEnquiryModal() {
+  if (!enquiryModal) return;
+
+  enquiryModal.hidden = true;
+  document.body.classList.remove("modal-open");
+}
+
+enquiryTriggers.forEach((trigger) => {
+  trigger.addEventListener("click", (event) => {
+    const didOpen = openEnquiryModal(trigger.dataset.enquiryCourse);
+    if (didOpen) event.preventDefault();
+  });
+});
+
+enquiryCloseButtons.forEach((button) => {
+  button.addEventListener("click", closeEnquiryModal);
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && enquiryModal && !enquiryModal.hidden) {
+    closeEnquiryModal();
+  }
+});
 
 testimonialButtons.forEach((button) => {
   button.addEventListener("click", () => {
