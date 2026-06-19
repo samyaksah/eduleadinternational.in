@@ -5,3 +5,8 @@
   from = "/api/instagram"
   to = "/.netlify/functions/instagram"
   status = 200
+
+[[redirects]]
+  from = "/api/results"
+  to = "/.netlify/functions/results"
+  status = 200

@@ -49,6 +49,8 @@ const enquiryTitle = document.querySelector("[data-enquiry-title]");
 const enquiryCourseField = document.querySelector("[data-enquiry-course-field]");
 const enquiryCourseDisplay = document.querySelector("[data-enquiry-course-display]");
 const enquiryCloseButtons = document.querySelectorAll("[data-enquiry-close]");
+const resultGrids = document.querySelectorAll("[data-results-grid]");
+const featuredResultTracks = document.querySelectorAll("[data-featured-results]");
 let testimonialIndex = 0;
 let writtenTestimonialsTimer;
 let learningCarouselTimer;
@@ -104,6 +106,12 @@ const courseContent = {
   }
 };
 
+const resultCourseLabels = {
+  teachingLearning: "Certificate and Diploma in Teaching and Learning",
+  educationalLeadership: "Certificate and Diploma in Educational Leadership",
+  other: "EduLead International Programme"
+};
+
 function renderTestimonial() {
   if (!testimonialText || !testimonialName || !testimonialRole) return;
 
@@ -142,6 +150,120 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
+}
+
+function getInitials(name) {
+  return String(name || "")
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase();
+}
+
+function formatSchoolLocation(result) {
+  const school = result.school || "";
+  const city = result.city || "";
+
+  if (school && city) {
+    return `${escapeHtml(school)} | <strong>${escapeHtml(city)}</strong>`;
+  }
+
+  if (city) return `<strong>${escapeHtml(city)}</strong>`;
+  return escapeHtml(school);
+}
+
+function renderResultPhoto(result) {
+  if (result.photoUrl) {
+    return `<img src="${escapeHtml(result.photoUrl)}" alt="${escapeHtml(result.name)}">`;
+  }
+
+  return escapeHtml(result.initials || getInitials(result.name) || "EL");
+}
+
+function renderResultCard(result, groupKey) {
+  const courseLabel = resultCourseLabels[groupKey] || result.course || resultCourseLabels.other;
+  const schoolLocation = formatSchoolLocation(result);
+  const score = result.score ? `<p class="result-score">Score: ${escapeHtml(result.score)}</p>` : "";
+
+  return `
+    <article class="result-card">
+      <div class="result-photo">${renderResultPhoto(result)}</div>
+      <div>
+        <h3>${escapeHtml(result.name)}</h3>
+        ${result.designation ? `<p class="result-role">${escapeHtml(result.designation)}</p>` : ""}
+        ${schoolLocation ? `<p class="result-school">${schoolLocation}</p>` : ""}
+        ${score}
+        <span class="result-course">${escapeHtml(courseLabel)}</span>
+      </div>
+    </article>
+  `;
+}
+
+function renderFeaturedResult(result) {
+  const schoolLocation = formatSchoolLocation(result);
+  const score = result.score ? `Score: ${result.score}` : "";
+  const meta = [schoolLocation, score].filter(Boolean).join(" | ");
+
+  return `
+    <article>
+      <div class="distinction-avatar">${renderResultPhoto(result)}</div>
+      <div>
+        <strong>${escapeHtml(result.name)}</strong>
+        ${result.designation ? `<span>${escapeHtml(result.designation)}</span>` : ""}
+        ${meta ? `<small>${escapeHtml(meta)}</small>` : ""}
+      </div>
+    </article>
+  `;
+}
+
+function repeatForCarousel(results, targetCount = 6) {
+  if (!results.length) return [];
+
+  const repeated = [];
+  while (repeated.length < targetCount) {
+    repeated.push(...results);
+  }
+
+  return repeated.slice(0, Math.max(targetCount, results.length));
+}
+
+function renderResults(payload) {
+  const groups = payload.groups || {};
+  const featured = payload.featured || {};
+
+  resultGrids.forEach((grid) => {
+    const groupKey = grid.dataset.resultsGrid;
+    const results = groups[groupKey] || [];
+    if (!results.length) return;
+
+    grid.innerHTML = results.map((result) => renderResultCard(result, groupKey)).join("");
+  });
+
+  featuredResultTracks.forEach((track) => {
+    const groupKey = track.dataset.featuredResults;
+    const results = featured[groupKey] || [];
+    if (!results.length) return;
+
+    track.innerHTML = repeatForCarousel(results).map(renderFeaturedResult).join("");
+  });
+}
+
+async function loadResults() {
+  if (!resultGrids.length && !featuredResultTracks.length) return;
+
+  try {
+    const response = await fetch("/api/results");
+    if (!response.ok) throw new Error("Results unavailable");
+
+    const payload = await response.json();
+    if (!payload.results?.length) return;
+
+    renderResults(payload);
+  } catch (error) {
+    // Keep the hardcoded fallback results already present in the HTML.
+  }
 }
 
 function renderCourseCard(card, option) {
@@ -386,3 +508,4 @@ if (learningCarousel) {
 
 renderTestimonial();
 loadInstagramFeed();
+loadResults();
