@@ -51,48 +51,48 @@ const courseContent = {
   cidtl: {
     certificate: {
       description:
-        "Build practical classroom strategies through reflective practice, assessment design, and active learning.",
-      duration: "Duration: 4 Months",
+        "Cambridge Professional Development Qualifications support effective continuing professional development through reflective teaching practice.",
+      duration: "Duration: 6 Months",
       learnings: [
-        "Active learning strategies",
-        "Assessment for learning",
-        "Reflective classroom practice",
-        "Instructional design basics"
+        "Engage critically with global best practices",
+        "Apply new ideas in teaching contexts",
+        "Evaluate experiences for further development",
+        "Improve teaching quality and student outcomes"
       ]
     },
     diploma: {
       description:
-        "Go deeper into teaching practice with a wider portfolio of classroom inquiry, learner support, and evidence-based improvement.",
-      duration: "Duration: 8 Months",
+        "Go deeper into Cambridge PDQ practice by connecting concepts, principles, theories, and classroom evidence.",
+      duration: "Duration: 6 Months",
       learnings: [
-        "Advanced instructional design",
-        "Differentiated classroom practice",
-        "Meaningful assessment systems",
-        "Professional portfolio development"
+        "Engage critically with relevant theories",
+        "Apply reflective practice in context",
+        "Plan further professional growth",
+        "Transform teaching and learning outcomes"
       ]
     }
   },
   cidel: {
     certificate: {
       description:
-        "Develop strategic leadership skills to drive school improvement and create positive learning environments.",
+        "Designed for school leaders, educational leaders with direct responsibility for teachers or leaders, and aspiring leaders.",
       duration: "Duration: 8 Months",
       learnings: [
-        "Strategic planning and vision setting",
-        "Leading school improvement initiatives",
-        "Building effective teaching teams",
-        "Data-driven decision making"
+        "Understanding leadership concepts and theories",
+        "Defining successful leadership practice",
+        "Action planning for leadership development",
+        "Teaching and learning in action"
       ]
     },
     diploma: {
       description:
-        "Extend your leadership practice through deeper school improvement planning, organisational change, and reflective leadership evidence.",
+        "Develop professional leadership practice through action planning, reflection, and teaching and learning in action.",
       duration: "Duration: 12 Months",
       learnings: [
-        "Long-term school improvement planning",
-        "Leading organisational change",
-        "Coaching and developing teaching teams",
-        "Evidence-informed leadership practice"
+        "Key concepts and theories of leadership",
+        "Successful educational leadership practice",
+        "Developing professional practice",
+        "Leadership growth through action planning"
       ]
     }
   }
