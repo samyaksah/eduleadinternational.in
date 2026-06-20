@@ -1088,6 +1088,10 @@ h3 {
   stroke-width: 1.8;
 }
 
+.company-mark svg {
+  color: var(--blue);
+}
+
 .popular-pill {
   display: inline-flex;
   align-items: center;
@@ -1140,6 +1144,15 @@ h3 {
   font-family: "Inter Tight", Inter, sans-serif;
   font-size: clamp(1.3rem, 2vw, 1.7rem);
   line-height: 1.12;
+}
+
+.choice-course-card h3 span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--coral);
+  font-size: 0.62em;
+  line-height: 1.15;
+  text-transform: uppercase;
 }
 
 .choice-course-card p,
@@ -1915,22 +1928,141 @@ h3 {
 }
 
 #overview,
-#duration,
+#pathways,
 #fees,
-#structure,
 #purpose,
-#eligibility,
 #language,
-#modules,
 #support,
 #student-testimonials {
   scroll-margin-top: 160px;
 }
 
 .about-hero {
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.72fr);
+  justify-items: stretch;
+  align-items: center;
+  gap: clamp(34px, 6vw, 92px);
+  min-height: auto;
+  padding-top: clamp(68px, 8vw, 108px);
+  padding-bottom: clamp(62px, 7vw, 96px);
   background:
-    radial-gradient(circle at 50% 0%, rgba(237, 109, 95, 0.12), transparent 34%),
+    linear-gradient(180deg, rgba(141, 211, 224, 0.28), rgba(255, 255, 255, 0) 66%),
     var(--white);
+  text-align: left;
+}
+
+.about-hero h1 {
+  max-width: 980px;
+  margin-right: 0;
+  margin-left: 0;
+  text-align: left;
+  text-wrap: initial;
+}
+
+.about-hero > p:not(.kicker) {
+  max-width: none;
+}
+
+.about-hero-copy > p:not(.kicker) {
+  max-width: 760px;
+  color: #4b6074;
+  font-size: clamp(1.12rem, 1.8vw, 1.34rem);
+}
+
+.about-hero-panel {
+  display: grid;
+  gap: 18px;
+  padding: clamp(22px, 3vw, 34px);
+  border: 1px solid rgba(43, 75, 103, 0.12);
+  border-radius: 28px;
+  background: var(--white);
+  box-shadow: var(--shadow);
+}
+
+.about-focus-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 16px;
+  align-items: center;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.focus-mark {
+  display: grid;
+  place-items: center;
+  width: 82px;
+  aspect-ratio: 1;
+  border-radius: 24px;
+  color: var(--white);
+  background: linear-gradient(135deg, var(--coral), var(--blue));
+  font-family: "Inter Tight", Inter, sans-serif;
+  font-size: 1.15rem;
+  font-weight: 900;
+}
+
+.about-focus-card span {
+  display: block;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.about-focus-card strong {
+  display: block;
+  color: var(--blue-deep);
+  font-family: "Inter Tight", Inter, sans-serif;
+  font-size: clamp(1.45rem, 2.6vw, 2rem);
+  line-height: 1.05;
+}
+
+.about-method-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.about-method-list li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px 14px;
+  align-items: start;
+  padding: 16px;
+  border-radius: 18px;
+  background: var(--gray);
+}
+
+.about-method-list span {
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  color: var(--white);
+  background: var(--blue);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.about-method-list strong,
+.about-method-list small {
+  display: block;
+}
+
+.about-method-list strong {
+  color: var(--blue-deep);
+  font-weight: 900;
+}
+
+.about-method-list small {
+  color: var(--blue);
+  line-height: 1.45;
+}
+
+.about-hero + .about-story {
+  padding-top: clamp(44px, 6vw, 72px);
 }
 
 .about-story,
@@ -1978,6 +2110,51 @@ h3 {
 .founder-role {
   color: var(--coral) !important;
   font-weight: 900;
+}
+
+.founder-socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 28px;
+}
+
+.founder-socials span {
+  flex-basis: 100%;
+  color: var(--blue-deep);
+  font-weight: 900;
+}
+
+.founder-socials a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid rgba(43, 75, 103, 0.18);
+  border-radius: 999px;
+  color: var(--blue);
+  background: var(--white);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.founder-socials svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.9;
+}
+
+.founder-socials a:hover,
+.founder-socials a:focus-visible {
+  color: var(--white);
+  background: var(--blue);
 }
 
 .vision-mission {
@@ -2177,6 +2354,7 @@ h3 {
 }
 
 .duration-grid,
+.pathway-grid,
 .eligibility-grid,
 .module-grid {
   display: grid;
@@ -2185,11 +2363,13 @@ h3 {
   margin: 0 auto;
 }
 
-.duration-grid {
+.duration-grid,
+.pathway-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .duration-grid article,
+.pathway-grid article,
 .eligibility-grid article,
 .module-card,
 .support-card {
@@ -2203,13 +2383,57 @@ h3 {
   padding: clamp(26px, 4vw, 42px);
 }
 
+.pathway-grid article {
+  display: grid;
+  align-content: start;
+  gap: 18px;
+  padding: clamp(24px, 3.2vw, 36px);
+}
+
 .duration-grid span,
+.pathway-grid article > span,
 .module-card span {
   display: block;
   margin-bottom: 16px;
   color: var(--coral);
   font-weight: 900;
   text-transform: uppercase;
+}
+
+.pathway-grid h3 {
+  margin-bottom: 0;
+  color: var(--blue-deep);
+  font-family: "Inter Tight", Inter, sans-serif;
+  font-size: clamp(1.65rem, 2.5vw, 2.35rem);
+  line-height: 1.02;
+}
+
+.pathway-grid p {
+  margin: 0;
+  color: var(--blue);
+}
+
+.pathway-grid dl {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+.pathway-grid dl div {
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.pathway-grid dt {
+  margin-bottom: 4px;
+  color: var(--blue-deep);
+  font-weight: 900;
+}
+
+.pathway-grid dd {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.45;
 }
 
 .duration-grid strong {
@@ -2331,6 +2555,10 @@ h3 {
   padding: clamp(34px, 5vw, 64px);
   border-radius: 56px;
   background: #fdebd9;
+}
+
+.compact-qualification {
+  margin-top: clamp(30px, 5vw, 54px);
 }
 
 .qualification-card .section-header {
@@ -3128,6 +3356,7 @@ body.modal-open {
   .about-story,
   .founder-section,
   .vision-mission,
+  .about-hero,
   .programme-hero,
   .language-section,
   .support-card {
@@ -3143,6 +3372,7 @@ body.modal-open {
   .belief-grid,
   .results-grid,
   .duration-grid,
+  .pathway-grid,
   .eligibility-grid,
   .module-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3402,6 +3632,7 @@ body.modal-open {
   .testimonial-list,
   .belief-grid,
   .duration-grid,
+  .pathway-grid,
   .eligibility-grid,
   .module-grid,
   .teacher-traits,
@@ -3693,6 +3924,25 @@ body.modal-open {
     border-radius: 28px;
   }
 
+  .about-hero {
+    padding-top: 50px;
+  }
+
+  .about-hero-panel {
+    padding: 18px;
+    border-radius: 24px;
+  }
+
+  .about-focus-card {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .about-method-list li {
+    padding: 14px;
+  }
+
   .pathway-card {
     min-height: 118px;
     padding: 18px;
@@ -3748,6 +3998,7 @@ body.modal-open {
   .choice-course-card,
   .info-course-card,
   .duration-grid article,
+  .pathway-grid article,
   .eligibility-grid article,
   .module-card,
   .support-card,
