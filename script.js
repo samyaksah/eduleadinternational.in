@@ -27,6 +27,8 @@ const testimonials = [
 
 const menuButton = document.querySelector(".menu-toggle");
 const nav = document.querySelector(".site-nav");
+const commencementStrip = document.querySelector(".commencement-strip");
+const commencementSentinel = document.querySelector(".commencement-sentinel");
 const testimonialText = document.querySelector("#testimonial-text");
 const testimonialName = document.querySelector("#testimonial-name");
 const testimonialRole = document.querySelector("#testimonial-role");
@@ -51,9 +53,18 @@ const enquiryCourseDisplay = document.querySelector("[data-enquiry-course-displa
 const enquiryCloseButtons = document.querySelectorAll("[data-enquiry-close]");
 const resultGrids = document.querySelectorAll("[data-results-grid]");
 const featuredResultTracks = document.querySelectorAll("[data-featured-results]");
+const commencementCards = document.querySelectorAll("[data-commencement-card]");
 let testimonialIndex = 0;
 let writtenTestimonialsTimer;
 let learningCarouselTimer;
+
+function updateCommencementStripState() {
+  if (!commencementStrip) return;
+
+  const headerHeight = document.querySelector(".site-header")?.offsetHeight || 0;
+  const stripTop = commencementStrip.getBoundingClientRect().top;
+  commencementStrip.classList.toggle("is-stuck", stripTop <= headerHeight + 1 && window.scrollY > 4);
+}
 
 const courseContent = {
   cidtl: {
@@ -288,6 +299,41 @@ function renderCourseCard(card, option) {
   }
 }
 
+function renderCommencements(payload) {
+  const byCourse = payload.byCourse || {};
+
+  commencementCards.forEach((card) => {
+    const record = byCourse[card.dataset.commencementCard];
+    if (!record?.commencementDate) return;
+
+    const dateTarget = card.querySelector("[data-commencement-date]");
+    const labelTarget = card.querySelector("[data-commencement-label]");
+
+    if (dateTarget) dateTarget.textContent = record.commencementDate;
+    if (labelTarget && record.label) labelTarget.textContent = record.label;
+
+    if (record.url && card.matches("a")) {
+      card.setAttribute("href", record.url);
+    }
+  });
+}
+
+async function loadCommencements() {
+  if (!commencementCards.length) return;
+
+  try {
+    const response = await fetch("/api/commencements");
+    if (!response.ok) throw new Error("Commencement dates unavailable");
+
+    const payload = await response.json();
+    if (!payload.commencements?.length) return;
+
+    renderCommencements(payload);
+  } catch (error) {
+    // Keep the hardcoded fallback commencement dates already present in the HTML.
+  }
+}
+
 function selectVideo(slide) {
   if (!slide || !playlistPlayer || !playlistTitle || !playlistDescription) return;
 
@@ -353,6 +399,23 @@ if (menuButton && nav) {
       menuButton.setAttribute("aria-expanded", "false");
     }
   });
+}
+
+if (commencementStrip) {
+  if (commencementSentinel && "IntersectionObserver" in window) {
+    const commencementObserver = new IntersectionObserver(
+      ([entry]) => {
+        commencementStrip.classList.toggle("is-stuck", !entry.isIntersecting);
+      },
+      { threshold: 0 }
+    );
+
+    commencementObserver.observe(commencementSentinel);
+  } else {
+    updateCommencementStripState();
+    window.addEventListener("scroll", updateCommencementStripState, { passive: true });
+    window.addEventListener("resize", updateCommencementStripState);
+  }
 }
 
 function openEnquiryModal(courseName) {
@@ -509,3 +572,4 @@ if (learningCarousel) {
 renderTestimonial();
 loadInstagramFeed();
 loadResults();
+loadCommencements();
