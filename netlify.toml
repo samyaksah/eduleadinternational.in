@@ -15,3 +15,8 @@
   from = "/api/commencements"
   to = "/.netlify/functions/commencements"
   status = 200
+
+[[redirects]]
+  from = "/api/gallery"
+  to = "/.netlify/functions/gallery"
+  status = 200

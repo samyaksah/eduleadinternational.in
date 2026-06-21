@@ -27,6 +27,7 @@ const testimonials = [
 
 const menuButton = document.querySelector(".menu-toggle");
 const nav = document.querySelector(".site-nav");
+const headerCta = document.querySelector(".header-cta");
 const commencementStrip = document.querySelector(".commencement-strip");
 const commencementSentinel = document.querySelector(".commencement-sentinel");
 const testimonialText = document.querySelector("#testimonial-text");
@@ -43,6 +44,12 @@ const videoSlides = document.querySelectorAll(".video-slide");
 const videoScrollButtons = document.querySelectorAll("[data-video-scroll]");
 const carouselScrollButtons = document.querySelectorAll("[data-carousel-scroll]");
 const galleryScrollButtons = document.querySelectorAll("[data-gallery-scroll]");
+const galleryGrid = document.querySelector("[data-gallery-grid]");
+const galleryModal = document.querySelector("#gallery-modal");
+const galleryPreviewImage = document.querySelector("[data-gallery-preview-image]");
+const galleryPreviewPlaceholder = document.querySelector("[data-gallery-preview-placeholder]");
+const galleryPreviewDescription = document.querySelector("[data-gallery-preview-description]");
+const galleryCloseButtons = document.querySelectorAll("[data-gallery-close]");
 const writtenTestimonialsCarousel = document.querySelector("#written-testimonials");
 const learningCarousel = document.querySelector("#learning-carousel");
 const enquiryModal = document.querySelector("#course-enquiry-modal");
@@ -64,6 +71,14 @@ const certificatePreviewPlaceholder = document.querySelector("[data-certificate-
 let testimonialIndex = 0;
 let writtenTestimonialsTimer;
 let learningCarouselTimer;
+
+if (nav && headerCta && !nav.querySelector(".mobile-nav-cta")) {
+  const mobileCta = headerCta.cloneNode(true);
+  mobileCta.classList.remove("header-cta");
+  mobileCta.classList.add("mobile-nav-cta");
+  mobileCta.removeAttribute("aria-current");
+  nav.appendChild(mobileCta);
+}
 
 function updateCommencementStripState() {
   if (!commencementStrip) return;
@@ -127,7 +142,7 @@ const courseContent = {
 const resultCourseLabels = {
   teachingLearning: "Certificate and Diploma in Teaching and Learning",
   educationalLeadership: "Certificate and Diploma in Educational Leadership",
-  other: "EduLead International Programme"
+  other: "Edu Lead International Programme"
 };
 
 function renderTestimonial() {
@@ -375,7 +390,7 @@ async function loadInstagramFeed() {
     instagramFeed.innerHTML = posts
       .slice(0, 6)
       .map((post) => {
-        const caption = post.caption ? post.caption.slice(0, 130) : "Recent EduLead International update.";
+        const caption = post.caption ? post.caption.slice(0, 130) : "Recent Edu Lead International update.";
         const date = formatPostDate(post.timestamp);
         return `
           <article class="instagram-card">
@@ -443,7 +458,9 @@ function closeEnquiryModal() {
   if (!enquiryModal) return;
 
   enquiryModal.hidden = true;
-  document.body.classList.remove("modal-open");
+  if ((!certificateModal || certificateModal.hidden) && (!galleryModal || galleryModal.hidden)) {
+    document.body.classList.remove("modal-open");
+  }
 }
 
 function setCertificatePreviewImage(src, title) {
@@ -488,8 +505,114 @@ function closeCertificateModal() {
   if (!certificateModal) return;
 
   certificateModal.hidden = true;
-  if (!enquiryModal || enquiryModal.hidden) {
+  if ((!enquiryModal || enquiryModal.hidden) && (!galleryModal || galleryModal.hidden)) {
     document.body.classList.remove("modal-open");
+  }
+}
+
+function setGalleryPreviewImage(src, title) {
+  if (!galleryPreviewImage || !galleryPreviewPlaceholder) return;
+
+  galleryPreviewImage.hidden = true;
+  galleryPreviewImage.removeAttribute("src");
+  galleryPreviewImage.alt = "";
+  galleryPreviewPlaceholder.hidden = false;
+
+  if (!src) return;
+
+  const preview = new Image();
+  preview.onload = () => {
+    galleryPreviewImage.src = src;
+    galleryPreviewImage.alt = title;
+    galleryPreviewImage.hidden = false;
+    galleryPreviewPlaceholder.hidden = true;
+  };
+  preview.onerror = () => {
+    galleryPreviewImage.hidden = true;
+    galleryPreviewPlaceholder.hidden = false;
+  };
+  preview.src = src;
+}
+
+function openGalleryModal(trigger) {
+  if (!galleryModal || !trigger) return false;
+
+  const title = trigger.dataset.galleryTitle || "Gallery image";
+  const description = trigger.dataset.galleryDescription || "";
+  const image = trigger.dataset.galleryImage || "";
+
+  if (galleryPreviewDescription) galleryPreviewDescription.textContent = description;
+  setGalleryPreviewImage(image, title);
+  galleryModal.hidden = false;
+  document.body.classList.add("modal-open");
+  galleryModal.querySelector(".modal-close[data-gallery-close]")?.focus();
+  return true;
+}
+
+function closeGalleryModal() {
+  if (!galleryModal) return;
+
+  galleryModal.hidden = true;
+  if ((!enquiryModal || enquiryModal.hidden) && (!certificateModal || certificateModal.hidden)) {
+    document.body.classList.remove("modal-open");
+  }
+}
+
+function setupGalleryItem(item) {
+  const imagePath = item.dataset.galleryImage;
+  const media = item.querySelector(".gallery-item-media");
+  const title = item.dataset.galleryTitle || "Gallery image";
+
+  if (imagePath && media && !media.querySelector("img")) {
+    const image = new Image();
+    image.onload = () => {
+      const thumbnail = document.createElement("img");
+      thumbnail.src = imagePath;
+      thumbnail.alt = title;
+      media.appendChild(thumbnail);
+    };
+    image.src = imagePath;
+  }
+
+  item.addEventListener("click", () => {
+    openGalleryModal(item);
+  });
+}
+
+function renderGalleryItem(item, index) {
+  const number = String(index + 1).padStart(2, "0");
+  const description = item.description || "";
+  const image = item.imageUrl || item.image_url || "";
+
+  return `
+    <button type="button" class="gallery-item" data-gallery-title="Gallery image" data-gallery-description="${escapeHtml(description)}" data-gallery-image="${escapeHtml(image)}">
+      <span class="gallery-item-media" aria-hidden="true"><strong>${number}</strong></span>
+      <span class="gallery-item-copy"><small>${escapeHtml(description)}</small></span>
+    </button>
+  `;
+}
+
+function initializeGalleryItems() {
+  document.querySelectorAll("[data-gallery-image]").forEach(setupGalleryItem);
+}
+
+async function loadGallery() {
+  if (!galleryGrid) return;
+
+  try {
+    const response = await fetch("/api/gallery");
+    if (!response.ok) throw new Error("Gallery unavailable");
+
+    const payload = await response.json();
+    if (!payload.gallery?.length) {
+      initializeGalleryItems();
+      return;
+    }
+
+    galleryGrid.innerHTML = payload.gallery.map(renderGalleryItem).join("");
+    initializeGalleryItems();
+  } catch (error) {
+    initializeGalleryItems();
   }
 }
 
@@ -511,6 +634,10 @@ document.addEventListener("keydown", (event) => {
 
   if (event.key === "Escape" && certificateModal && !certificateModal.hidden) {
     closeCertificateModal();
+  }
+
+  if (event.key === "Escape" && galleryModal && !galleryModal.hidden) {
+    closeGalleryModal();
   }
 });
 
@@ -536,6 +663,10 @@ certificateTriggers.forEach((trigger) => {
 
 certificateCloseButtons.forEach((button) => {
   button.addEventListener("click", closeCertificateModal);
+});
+
+galleryCloseButtons.forEach((button) => {
+  button.addEventListener("click", closeGalleryModal);
 });
 
 testimonialButtons.forEach((button) => {
@@ -665,3 +796,4 @@ renderTestimonial();
 loadInstagramFeed();
 loadResults();
 loadCommencements();
+loadGallery();
