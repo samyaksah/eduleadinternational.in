@@ -54,6 +54,13 @@ const enquiryCloseButtons = document.querySelectorAll("[data-enquiry-close]");
 const resultGrids = document.querySelectorAll("[data-results-grid]");
 const featuredResultTracks = document.querySelectorAll("[data-featured-results]");
 const commencementCards = document.querySelectorAll("[data-commencement-card]");
+const faqItems = document.querySelectorAll(".faq-list details");
+const certificateModal = document.querySelector("#certificate-proof-modal");
+const certificateTriggers = document.querySelectorAll("[data-certificate-image]");
+const certificateCloseButtons = document.querySelectorAll("[data-certificate-close]");
+const certificatePreviewImage = document.querySelector("[data-certificate-preview-image]");
+const certificatePreviewTitle = document.querySelector("[data-certificate-preview-title]");
+const certificatePreviewPlaceholder = document.querySelector("[data-certificate-preview-placeholder]");
 let testimonialIndex = 0;
 let writtenTestimonialsTimer;
 let learningCarouselTimer;
@@ -439,6 +446,53 @@ function closeEnquiryModal() {
   document.body.classList.remove("modal-open");
 }
 
+function setCertificatePreviewImage(src, title) {
+  if (!certificatePreviewImage || !certificatePreviewPlaceholder) return;
+
+  certificatePreviewImage.hidden = true;
+  certificatePreviewImage.removeAttribute("src");
+  certificatePreviewImage.alt = "";
+  certificatePreviewPlaceholder.hidden = false;
+
+  if (!src) return;
+
+  const preview = new Image();
+  preview.onload = () => {
+    certificatePreviewImage.src = src;
+    certificatePreviewImage.alt = `${title} preview`;
+    certificatePreviewImage.hidden = false;
+    certificatePreviewPlaceholder.hidden = true;
+  };
+  preview.onerror = () => {
+    certificatePreviewImage.hidden = true;
+    certificatePreviewPlaceholder.hidden = false;
+  };
+  preview.src = src;
+}
+
+function openCertificateModal(trigger) {
+  if (!certificateModal || !trigger) return false;
+
+  const title = trigger.dataset.certificateTitle || "Certificate preview";
+  const image = trigger.dataset.certificateImage || "";
+
+  if (certificatePreviewTitle) certificatePreviewTitle.textContent = title;
+  setCertificatePreviewImage(image, title);
+  certificateModal.hidden = false;
+  document.body.classList.add("modal-open");
+  certificateModal.querySelector("[data-certificate-close]")?.focus();
+  return true;
+}
+
+function closeCertificateModal() {
+  if (!certificateModal) return;
+
+  certificateModal.hidden = true;
+  if (!enquiryModal || enquiryModal.hidden) {
+    document.body.classList.remove("modal-open");
+  }
+}
+
 enquiryTriggers.forEach((trigger) => {
   trigger.addEventListener("click", (event) => {
     const didOpen = openEnquiryModal(trigger.dataset.enquiryCourse);
@@ -454,6 +508,34 @@ document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && enquiryModal && !enquiryModal.hidden) {
     closeEnquiryModal();
   }
+
+  if (event.key === "Escape" && certificateModal && !certificateModal.hidden) {
+    closeCertificateModal();
+  }
+});
+
+certificateTriggers.forEach((trigger) => {
+  const imagePath = trigger.dataset.certificateImage;
+  const media = trigger.querySelector(".certificate-proof-media");
+
+  if (imagePath && media) {
+    const image = new Image();
+    image.onload = () => {
+      const thumbnail = document.createElement("img");
+      thumbnail.src = imagePath;
+      thumbnail.alt = "";
+      media.appendChild(thumbnail);
+    };
+    image.src = imagePath;
+  }
+
+  trigger.addEventListener("click", () => {
+    openCertificateModal(trigger);
+  });
+});
+
+certificateCloseButtons.forEach((button) => {
+  button.addEventListener("click", closeCertificateModal);
 });
 
 testimonialButtons.forEach((button) => {
@@ -471,6 +553,16 @@ courseCards.forEach((card) => {
     button.setAttribute("aria-pressed", String(button.classList.contains("is-active")));
     button.addEventListener("click", () => {
       renderCourseCard(card, button.dataset.courseOption);
+    });
+  });
+});
+
+faqItems.forEach((item) => {
+  item.addEventListener("toggle", () => {
+    if (!item.open) return;
+
+    faqItems.forEach((otherItem) => {
+      if (otherItem !== item) otherItem.open = false;
     });
   });
 });

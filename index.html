@@ -3,12 +3,12 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="EduLead International offers Cambridge-accredited professional development courses for teachers and school leaders.">
+    <meta name="description" content="EduLead International offers Cambridge PDQs, CPD online programmes, and certified training for teachers and school leaders.">
     <title>EduLead International</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Inter+Tight:wght@600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20260620-cambridge-card-tight">
   </head>
   <body>
     <header class="site-header">
@@ -21,7 +21,6 @@
         <a href="index.html" aria-current="page">Home</a>
         <a href="about.html">About Us</a>
         <a href="courses.html">Courses</a>
-        <a href="testimonials.html">Testimonials</a>
         <a href="results.html">Results</a>
         <a href="gallery.html">Gallery</a>
         <a href="faq.html">FAQ</a>
@@ -50,7 +49,7 @@
           <div class="hero-copy">
             <p class="hero-badge">
               <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 21h8"></path><path d="M12 17v4"></path><path d="M7 4h10v6a5 5 0 0 1-10 0V4Z"></path><path d="M7 7H4a3 3 0 0 0 3 3"></path><path d="M17 7h3a3 3 0 0 1-3 3"></path></svg>
-              Cambridge Accredited Programs
+              Cambridge PDQ Centre
             </p>
             <h1>Transform Your Teaching!<span>Lead with Excellence!</span></h1>
             <p>Elevate your career with internationally recognized professional development programs. Join 15,000+ educators who have transformed classrooms across the globe.</p>
@@ -79,6 +78,92 @@
           <div><svg class="stat-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20"></path><path d="M12 2a15.3 15.3 0 0 1 0 20"></path><path d="M12 2a15.3 15.3 0 0 0 0 20"></path></svg><strong>20+</strong><span>Cities & Countries</span></div>
         </div>
       </section>
+
+      <section class="section cambridge-proof" aria-labelledby="cambridge-proof-title">
+        <div class="cambridge-proof-layout">
+          <div class="cambridge-proof-copy">
+            <p class="kicker">Cambridge Recognition</p>
+            <h2 id="cambridge-proof-title">EduLead International is a Cambridge Professional Development Centre.</h2>
+            <p>EduLead International is listed as a Cambridge Professional Development Centre in India for Cambridge PDQ programmes.</p>
+            <p class="cambridge-proof-note">Cambridge recognition applies to EduLead International&apos;s Cambridge PDQ programmes in Teaching and Learning and Educational Leadership.</p>
+          </div>
+          <div class="cambridge-verification-card" aria-label="Cambridge centre verification details">
+            <span>Verified centre details</span>
+            <dl>
+              <div>
+                <dt>Centre name</dt>
+                <dd>EduLead International</dd>
+              </div>
+              <div>
+                <dt>Cambridge PDQ Centre No.</dt>
+                <dd>IA076</dd>
+              </div>
+              <div>
+                <dt>Centre lead</dt>
+                <dd>Rupam Sah</dd>
+              </div>
+              <div>
+                <dt>Location</dt>
+                <dd>Noida, Delhi</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+
+        <div class="certificate-proof-grid" aria-label="Cambridge programme certificates">
+          <button type="button" class="certificate-proof-card" data-certificate-title="Teaching and Learning Certificate" data-certificate-image="assets/accreditation/teaching-learning-certificate.jpg">
+            <span class="certificate-proof-media" aria-hidden="true"><strong>TL</strong></span>
+            <span>
+              <small>Cambridge PDQ</small>
+              <strong>Teaching and Learning Certificate</strong>
+              <em>View certificate <span aria-hidden="true">&rarr;</span></em>
+            </span>
+          </button>
+          <button type="button" class="certificate-proof-card" data-certificate-title="Teaching and Learning Diploma" data-certificate-image="assets/accreditation/teaching-learning-diploma.jpg">
+            <span class="certificate-proof-media" aria-hidden="true"><strong>TL</strong></span>
+            <span>
+              <small>Cambridge PDQ</small>
+              <strong>Teaching and Learning Diploma</strong>
+              <em>View certificate <span aria-hidden="true">&rarr;</span></em>
+            </span>
+          </button>
+          <button type="button" class="certificate-proof-card" data-certificate-title="Educational Leadership Certificate" data-certificate-image="assets/accreditation/educational-leadership-certificate.jpg">
+            <span class="certificate-proof-media" aria-hidden="true"><strong>EL</strong></span>
+            <span>
+              <small>Cambridge PDQ</small>
+              <strong>Educational Leadership Certificate</strong>
+              <em>View certificate <span aria-hidden="true">&rarr;</span></em>
+            </span>
+          </button>
+          <button type="button" class="certificate-proof-card" data-certificate-title="Educational Leadership Diploma" data-certificate-image="assets/accreditation/educational-leadership-diploma.jpg">
+            <span class="certificate-proof-media" aria-hidden="true"><strong>EL</strong></span>
+            <span>
+              <small>Cambridge PDQ</small>
+              <strong>Educational Leadership Diploma</strong>
+              <em>View certificate <span aria-hidden="true">&rarr;</span></em>
+            </span>
+          </button>
+        </div>
+      </section>
+
+      <div class="certificate-modal" id="certificate-proof-modal" hidden>
+        <button class="certificate-modal-backdrop" type="button" data-certificate-close aria-label="Close certificate preview"></button>
+        <div class="certificate-dialog" role="dialog" aria-modal="true" aria-labelledby="certificate-modal-title">
+          <button class="modal-close" type="button" data-certificate-close aria-label="Close certificate preview">&times;</button>
+          <div class="certificate-preview">
+            <img src="" alt="" data-certificate-preview-image hidden>
+            <div class="certificate-preview-placeholder" data-certificate-preview-placeholder>
+              <span>Certificate preview</span>
+              <strong>Upload image to assets/accreditation</strong>
+            </div>
+          </div>
+          <div>
+            <p class="kicker">Cambridge PDQ Certificate</p>
+            <h2 id="certificate-modal-title" data-certificate-preview-title>Certificate preview</h2>
+            <p>Certificate image preview for EduLead International&apos;s Cambridge PDQ programme recognition.</p>
+          </div>
+        </div>
+      </div>
 
       <section class="distinction-showcase" aria-label="Graduates with distinction">
         <div class="distinction-row distinction-cidtl">
@@ -191,7 +276,7 @@
                 <li>Flipped Classrooms</li>
               </ul>
             </div>
-            <a href="courses.html#cpd">Learn More <span aria-hidden="true">&rarr;</span></a>
+            <a href="cpd-online.html">Learn More <span aria-hidden="true">&rarr;</span></a>
           </article>
           <article class="info-course-card">
             <span class="accreditation-mark company-mark">
@@ -214,7 +299,7 @@
                 <li>Certification at the end of the training</li>
               </ul>
             </div>
-            <a href="courses.html#certified-training">Learn More <span aria-hidden="true">&rarr;</span></a>
+            <a href="certified-training.html">Learn More <span aria-hidden="true">&rarr;</span></a>
           </article>
         </div>
       </section>
@@ -316,7 +401,7 @@
             <article class="written-testimonial-card">
               <div class="person-photo">VT</div>
               <div class="written-testimonial-content">
-                <div><span class="quote-mark" aria-hidden="true">&ldquo;</span><a href="testimonials.html">Read more</a></div>
+                <div><span class="quote-mark" aria-hidden="true">&ldquo;</span></div>
                 <p>The Educational Leadership Course (CIDEL) is the best that has happened to me in 2020; during the challenging times of COVID-19 pandemic! Effectively led by the Project Leader- Ms Rupam, this course is rooted in the principles of andragogy...giving us, the practitioner-participants, both a motivation and a propulsion to connect and translate the latest educational theories with and at our workplace. Professional readings, academic discourses, networking are my personal advantages. I will highly recommend this course to all those who are interested in the latest and advancement and science of LEADERSHIP especially in India wherein this opportunity is an oasis in the desert!</p>
                 <div class="testimonial-person"><strong>V. Meena Thripurasundari</strong><span>Head of Admissions & Marketing</span><small>The NEST School, Chennai</small></div>
               </div>
@@ -324,7 +409,7 @@
             <article class="written-testimonial-card">
               <div class="person-photo">HT</div>
               <div class="written-testimonial-content">
-                <div><span class="quote-mark" aria-hidden="true">&ldquo;</span><a href="testimonials.html">Read more</a></div>
+                <div><span class="quote-mark" aria-hidden="true">&ldquo;</span></div>
                 <p>The course surpassed my expectations. The facilitation ensured structure, rich Cambridge resources, and insightful discussions...</p>
                 <div class="testimonial-person"><strong>Dr. Himani Tyagi</strong><span>Principal</span><small>Millennium School, Noida</small></div>
               </div>
@@ -332,7 +417,7 @@
             <article class="written-testimonial-card">
               <div class="person-photo">IK</div>
               <div class="written-testimonial-content">
-                <div><span class="quote-mark" aria-hidden="true">&ldquo;</span><a href="testimonials.html">Read more</a></div>
+                <div><span class="quote-mark" aria-hidden="true">&ldquo;</span></div>
                 <p>The CIDEL course is a blend of vision, motivation, inspiration, and practical skills for an effective school leader...</p>
                 <div class="testimonial-person"><strong>Inderpal Kaur</strong><span>Principal</span><small>The Sanskruti English Medium School</small></div>
               </div>
@@ -340,7 +425,7 @@
             <article class="written-testimonial-card">
               <div class="person-photo">RD</div>
               <div class="written-testimonial-content">
-                <div><span class="quote-mark" aria-hidden="true">&ldquo;</span><a href="testimonials.html">Read more</a></div>
+                <div><span class="quote-mark" aria-hidden="true">&ldquo;</span></div>
                 <p>CIDTL helped me understand the concepts behind different pedagogical methods and gave my work as a teacher an informed direction...</p>
                 <div class="testimonial-person"><strong>Ria Dabas</strong><span>PRT English</span><small>Golaya Progressive Public School</small></div>
               </div>
@@ -375,7 +460,6 @@
             </article>
           </div>
         </div>
-        <div class="centered section-action"><a class="button button-secondary" href="testimonials.html">View all testimonials</a></div>
       </section>
 
       <section class="contact">
@@ -398,21 +482,20 @@
             <span class="brand-mark">ELI</span>
             <span class="brand-text"><strong>EduLead</strong><span>International</span></span>
           </a>
-          <p>Cambridge-accredited professional development for teachers, school leaders, and institutions.</p>
+          <p>Cambridge PDQs and EduLead professional development for teachers, school leaders, and institutions.</p>
         </div>
         <nav aria-label="Footer quick links">
           <h3>Explore</h3>
           <a href="about.html">About Us</a>
           <a href="courses.html">Courses</a>
-          <a href="testimonials.html">Testimonials</a>
           <a href="results.html">Results</a>
         </nav>
         <nav aria-label="Footer programmes">
           <h3>Programmes</h3>
           <a href="teaching-learning.html">Teaching & Learning</a>
           <a href="educational-leadership.html">Educational Leadership</a>
-          <a href="courses.html#cpd">CPD Online</a>
-          <a href="courses.html#certified-training">Certified Training</a>
+          <a href="cpd-online.html">CPD Online</a>
+          <a href="certified-training.html">Certified Training</a>
         </nav>
         <div class="footer-contact">
           <h3>Contact</h3>
@@ -426,6 +509,6 @@
         <a href="contact.html">Send Enquiry</a>
       </div>
     </footer>
-    <script src="script.js?v=20260620-commencements-sheet"></script>
+    <script src="script.js?v=20260620-cambridge-proof"></script>
   </body>
 </html>
