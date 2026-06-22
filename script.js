@@ -36,6 +36,7 @@ const testimonialRole = document.querySelector("#testimonial-role");
 const testimonialButtons = document.querySelectorAll(".testimonial-controls button");
 const instagramFeed = document.querySelector("#instagram-feed");
 const courseCards = document.querySelectorAll("[data-course-card]");
+const courseVisualImages = document.querySelectorAll(".course-visual img, .brain-visual img");
 const playlistPlayer = document.querySelector("#playlist-player");
 const playlistTitle = document.querySelector("#playlist-title");
 const playlistDescription = document.querySelector("#playlist-description");
@@ -68,6 +69,7 @@ const certificateCloseButtons = document.querySelectorAll("[data-certificate-clo
 const certificatePreviewImage = document.querySelector("[data-certificate-preview-image]");
 const certificatePreviewTitle = document.querySelector("[data-certificate-preview-title]");
 const certificatePreviewPlaceholder = document.querySelector("[data-certificate-preview-placeholder]");
+const certificatePreview = certificatePreviewImage?.closest(".certificate-preview");
 let testimonialIndex = 0;
 let writtenTestimonialsTimer;
 let learningCarouselTimer;
@@ -79,6 +81,12 @@ if (nav && headerCta && !nav.querySelector(".mobile-nav-cta")) {
   mobileCta.removeAttribute("aria-current");
   nav.appendChild(mobileCta);
 }
+
+courseVisualImages.forEach((image) => {
+  image.addEventListener("error", () => {
+    image.hidden = true;
+  });
+});
 
 function updateCommencementStripState() {
   if (!commencementStrip) return;
@@ -262,6 +270,10 @@ function repeatForCarousel(results, targetCount = 6) {
   return repeated.slice(0, Math.max(targetCount, results.length));
 }
 
+function setResultsMessage(grid, message) {
+  grid.innerHTML = `<p class="results-message">${escapeHtml(message)}</p>`;
+}
+
 function renderResults(payload) {
   const groups = payload.groups || {};
   const featured = payload.featured || {};
@@ -269,7 +281,10 @@ function renderResults(payload) {
   resultGrids.forEach((grid) => {
     const groupKey = grid.dataset.resultsGrid;
     const results = groups[groupKey] || [];
-    if (!results.length) return;
+    if (!results.length) {
+      setResultsMessage(grid, "No published distinction holders yet.");
+      return;
+    }
 
     grid.innerHTML = results.map((result) => renderResultCard(result, groupKey)).join("");
   });
@@ -291,11 +306,11 @@ async function loadResults() {
     if (!response.ok) throw new Error("Results unavailable");
 
     const payload = await response.json();
-    if (!payload.results?.length) return;
-
     renderResults(payload);
   } catch (error) {
-    // Keep the hardcoded fallback results already present in the HTML.
+    resultGrids.forEach((grid) => {
+      setResultsMessage(grid, "Results are being updated. Please check back soon.");
+    });
   }
 }
 
@@ -466,6 +481,7 @@ function closeEnquiryModal() {
 function setCertificatePreviewImage(src, title) {
   if (!certificatePreviewImage || !certificatePreviewPlaceholder) return;
 
+  certificatePreview?.classList.remove("is-loaded");
   certificatePreviewImage.hidden = true;
   certificatePreviewImage.removeAttribute("src");
   certificatePreviewImage.alt = "";
@@ -479,8 +495,10 @@ function setCertificatePreviewImage(src, title) {
     certificatePreviewImage.alt = `${title} preview`;
     certificatePreviewImage.hidden = false;
     certificatePreviewPlaceholder.hidden = true;
+    certificatePreview?.classList.add("is-loaded");
   };
   preview.onerror = () => {
+    certificatePreview?.classList.remove("is-loaded");
     certificatePreviewImage.hidden = true;
     certificatePreviewPlaceholder.hidden = false;
   };

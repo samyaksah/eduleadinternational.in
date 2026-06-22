@@ -865,9 +865,22 @@ h3 {
 
 .certificate-preview img {
   width: 100%;
-  height: 100%;
-  max-height: 620px;
+  height: auto;
   object-fit: contain;
+}
+
+.certificate-preview.is-loaded {
+  align-self: start;
+  min-height: 0;
+  max-height: none;
+  background: var(--white);
+}
+
+.certificate-preview.is-loaded img {
+  display: block;
+  height: auto;
+  max-height: calc(88vh - 120px);
+  object-position: top center;
 }
 
 .certificate-preview-placeholder {
@@ -879,6 +892,10 @@ h3 {
   padding: 24px;
   color: var(--blue);
   text-align: center;
+}
+
+.certificate-preview-placeholder[hidden] {
+  display: none !important;
 }
 
 .certificate-preview-placeholder span {
@@ -1412,6 +1429,33 @@ h3 {
   margin: 0;
 }
 
+.course-card-head .cambridge-card-logo {
+  display: grid;
+  place-items: center;
+  padding: 4px;
+  border: 1px solid rgba(43, 75, 103, 0.12);
+  background: var(--white);
+}
+
+.course-card-head .cambridge-card-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.course-card-head .edu-e-course-icon {
+  display: grid;
+  place-items: center;
+  border-radius: 0;
+  background: transparent;
+}
+
+.course-card-head .edu-e-course-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
 .course-card-head span {
   color: var(--blue);
   font-weight: 800;
@@ -1526,6 +1570,21 @@ h3 {
   letter-spacing: 0;
 }
 
+.course-visual img,
+.brain-visual img {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.course-visual img + span,
+.brain-visual img + span {
+  z-index: 1;
+}
+
 .teaching-visual {
   background:
     linear-gradient(135deg, rgba(43, 75, 103, 0.92), rgba(86, 167, 155, 0.78)),
@@ -1586,9 +1645,20 @@ h3 {
 }
 
 .accreditation-mark svg,
+.accreditation-mark .cambridge-logo-mark,
+.accreditation-mark .company-logo-mark,
 .course-duration svg {
   width: 21px;
   height: 21px;
+}
+
+.accreditation-mark .cambridge-logo-mark,
+.accreditation-mark .company-logo-mark {
+  object-fit: contain;
+}
+
+.accreditation-mark svg,
+.course-duration svg {
   color: var(--coral);
   fill: none;
   stroke: currentColor;
@@ -2484,7 +2554,7 @@ h3 {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(320px, 0.72fr);
   gap: clamp(34px, 6vw, 90px);
-  align-items: center;
+  align-items: start;
   padding: clamp(78px, 10vw, 128px) var(--page-pad);
   background:
     linear-gradient(180deg, rgba(141, 211, 224, 0.34), rgba(255, 255, 255, 0) 58%),
@@ -2651,13 +2721,15 @@ h3 {
 .programme-hero-visual {
   display: grid;
   gap: 22px;
+  margin-top: clamp(34px, 4.8vw, 56px);
 }
 
 .brain-visual {
   position: relative;
   display: grid;
   place-items: center;
-  min-height: 360px;
+  aspect-ratio: 3 / 2;
+  min-height: 0;
   overflow: hidden;
   border-radius: 34px;
   background:
@@ -2918,6 +2990,12 @@ h3 {
   font-weight: 900;
 }
 
+.focus-mark img {
+  width: 72%;
+  height: 72%;
+  object-fit: contain;
+}
+
 .about-focus-card span {
   display: block;
   color: var(--muted);
@@ -3011,6 +3089,7 @@ h3 {
   display: grid;
   place-items: center;
   min-height: 560px;
+  overflow: hidden;
   border-radius: 28px;
   color: var(--white);
   background:
@@ -3018,6 +3097,13 @@ h3 {
     var(--blue);
   box-shadow: var(--shadow);
   font-weight: 900;
+}
+
+.founder-photo img {
+  width: 100%;
+  height: 100%;
+  min-height: 560px;
+  object-fit: cover;
 }
 
 .founder-copy {
@@ -3174,6 +3260,19 @@ h3 {
   gap: clamp(18px, 2vw, 26px);
   max-width: var(--content-max);
   margin: 0 auto;
+}
+
+.results-message {
+  grid-column: 1 / -1;
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--white);
+  color: var(--muted);
+  text-align: center;
+  box-shadow: 0 18px 50px rgba(10, 35, 57, 0.08);
 }
 
 .result-card {
@@ -5117,8 +5216,12 @@ body.modal-open {
     text-align: left;
   }
 
+  .programme-hero-visual {
+    margin-top: 0;
+  }
+
   .brain-visual {
-    min-height: 280px;
+    min-height: 0;
   }
 
   .qualification-card {
@@ -5354,6 +5457,14 @@ body.modal-open {
   .certificate-preview,
   .certificate-preview-placeholder {
     min-height: 280px;
+  }
+
+  .certificate-preview.is-loaded {
+    min-height: 0;
+  }
+
+  .certificate-preview.is-loaded img {
+    max-height: 58vh;
   }
 
   .certificate-dialog h2 {
