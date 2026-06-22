@@ -236,7 +236,7 @@ function renderResultCard(result) {
 
 function renderFeaturedResult(result) {
   const schoolLocation = formatSchoolLocation(result);
-  const score = result.score ? `Score: ${result.score}` : "";
+  const score = result.score ? `Score: ${escapeHtml(result.score)}` : "";
   const meta = [schoolLocation, score].filter(Boolean).join(" | ");
 
   return `
@@ -245,7 +245,7 @@ function renderFeaturedResult(result) {
       <div>
         <strong>${escapeHtml(result.name)}</strong>
         ${result.designation ? `<span>${escapeHtml(result.designation)}</span>` : ""}
-        ${meta ? `<small>${escapeHtml(meta)}</small>` : ""}
+        ${meta ? `<small>${meta}</small>` : ""}
       </div>
     </article>
   `;
