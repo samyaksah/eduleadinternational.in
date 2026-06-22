@@ -3354,15 +3354,6 @@ h3 {
   font-weight: 900;
 }
 
-.result-card .result-course {
-  display: inline-flex;
-  margin-top: 8px;
-  color: var(--coral);
-  font-size: 0.72rem;
-  font-weight: 900;
-  text-transform: uppercase;
-}
-
 .programme-overview,
 .eligibility-section,
 .modules-section {

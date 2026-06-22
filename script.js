@@ -147,12 +147,6 @@ const courseContent = {
   }
 };
 
-const resultCourseLabels = {
-  teachingLearning: "Certificate and Diploma in Teaching and Learning",
-  educationalLeadership: "Certificate and Diploma in Educational Leadership",
-  other: "Edu Lead International Programme"
-};
-
 function renderTestimonial() {
   if (!testimonialText || !testimonialName || !testimonialRole) return;
 
@@ -223,8 +217,7 @@ function renderResultPhoto(result) {
   return escapeHtml(result.initials || getInitials(result.name) || "EL");
 }
 
-function renderResultCard(result, groupKey) {
-  const courseLabel = resultCourseLabels[groupKey] || result.course || resultCourseLabels.other;
+function renderResultCard(result) {
   const schoolLocation = formatSchoolLocation(result);
   const score = result.score ? `<p class="result-score">Score: ${escapeHtml(result.score)}</p>` : "";
 
@@ -236,7 +229,6 @@ function renderResultCard(result, groupKey) {
         ${result.designation ? `<p class="result-role">${escapeHtml(result.designation)}</p>` : ""}
         ${schoolLocation ? `<p class="result-school">${schoolLocation}</p>` : ""}
         ${score}
-        <span class="result-course">${escapeHtml(courseLabel)}</span>
       </div>
     </article>
   `;
@@ -286,7 +278,7 @@ function renderResults(payload) {
       return;
     }
 
-    grid.innerHTML = results.map((result) => renderResultCard(result, groupKey)).join("");
+    grid.innerHTML = results.map(renderResultCard).join("");
   });
 
   featuredResultTracks.forEach((track) => {
