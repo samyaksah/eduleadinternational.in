@@ -48,9 +48,9 @@ const galleryScrollButtons = document.querySelectorAll("[data-gallery-scroll]");
 const galleryGrid = document.querySelector("[data-gallery-grid]");
 const galleryModal = document.querySelector("#gallery-modal");
 const galleryPreviewImage = document.querySelector("[data-gallery-preview-image]");
-const galleryPreviewPlaceholder = document.querySelector("[data-gallery-preview-placeholder]");
 const galleryPreviewDescription = document.querySelector("[data-gallery-preview-description]");
 const galleryCloseButtons = document.querySelectorAll("[data-gallery-close]");
+const galleryPreview = galleryPreviewImage?.closest(".gallery-preview");
 const writtenTestimonialsCarousel = document.querySelector("#written-testimonials");
 const learningCarousel = document.querySelector("#learning-carousel");
 const enquiryModal = document.querySelector("#course-enquiry-modal");
@@ -521,12 +521,12 @@ function closeCertificateModal() {
 }
 
 function setGalleryPreviewImage(src, title) {
-  if (!galleryPreviewImage || !galleryPreviewPlaceholder) return;
+  if (!galleryPreviewImage) return;
 
+  galleryPreview?.classList.remove("is-loaded");
   galleryPreviewImage.hidden = true;
   galleryPreviewImage.removeAttribute("src");
   galleryPreviewImage.alt = "";
-  galleryPreviewPlaceholder.hidden = false;
 
   if (!src) return;
 
@@ -535,11 +535,11 @@ function setGalleryPreviewImage(src, title) {
     galleryPreviewImage.src = src;
     galleryPreviewImage.alt = title;
     galleryPreviewImage.hidden = false;
-    galleryPreviewPlaceholder.hidden = true;
+    galleryPreview?.classList.add("is-loaded");
   };
   preview.onerror = () => {
+    galleryPreview?.classList.remove("is-loaded");
     galleryPreviewImage.hidden = true;
-    galleryPreviewPlaceholder.hidden = false;
   };
   preview.src = src;
 }

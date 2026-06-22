@@ -2504,23 +2504,6 @@ h3 {
   object-fit: contain;
 }
 
-.gallery-preview-placeholder {
-  display: grid;
-  place-items: center;
-  width: 100%;
-  min-height: 520px;
-  color: var(--white);
-  background:
-    linear-gradient(135deg, rgba(237, 109, 95, 0.68), rgba(43, 75, 103, 0.86)),
-    var(--blue);
-}
-
-.gallery-preview-placeholder span {
-  font-family: "Inter Tight", Inter, sans-serif;
-  font-size: clamp(2rem, 5vw, 4rem);
-  font-weight: 900;
-}
-
 .gallery-dialog-copy {
   align-self: center;
 }
@@ -5488,8 +5471,7 @@ body.modal-open {
     clip-path: inset(0 round 24px);
   }
 
-  .gallery-preview,
-  .gallery-preview-placeholder {
+  .gallery-preview {
     min-height: 300px;
   }
 
