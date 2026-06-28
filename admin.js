@@ -7,7 +7,6 @@
   const signoutButton = document.querySelector("[data-signout]");
   const tabButtons = document.querySelectorAll("[data-admin-tab]");
   const newRecordButton = document.querySelector("[data-new-record]");
-  const importRecordsButton = document.querySelector("[data-import-records]");
   const recordList = document.querySelector("[data-record-list]");
   const recordCount = document.querySelector("[data-record-count]");
   const recordsTitle = document.querySelector("[data-records-title]");
@@ -115,6 +114,25 @@
         { name: "published", label: "Published", type: "checkbox" },
         { name: "sort_order", label: "Display order", type: "number", default: 100 }
       ]
+    },
+    brochures: {
+      table: "course_brochures",
+      title: "Course brochures",
+      singular: "course brochure",
+      description: "PDF brochures linked from each course page.",
+      fields: [
+        { name: "course_slug", label: "Course", type: "select", options: [
+          ["teaching-learning", "Teaching and Learning"],
+          ["educational-leadership", "Educational Leadership"],
+          ["cpd-online", "CPD Online"],
+          ["certified-training", "Certified Training"]
+        ], required: true },
+        { name: "title", label: "Brochure title", required: true },
+        { name: "file_url", label: "PDF URL", type: "url", required: true },
+        { name: "file_upload", label: "Upload PDF", type: "file", accept: "application/pdf", target: "file_url", folder: "brochures" },
+        { name: "published", label: "Published", type: "checkbox" },
+        { name: "sort_order", label: "Display order", type: "number", default: 100 }
+      ]
     }
   };
 
@@ -136,6 +154,16 @@
       options: [
         ["all", "All pages"],
         ["general", "Homepage"],
+        ["teaching-learning", "Teaching & Learning"],
+        ["educational-leadership", "Educational Leadership"],
+        ["cpd-online", "CPD Online"],
+        ["certified-training", "Certified Training"]
+      ]
+    },
+    brochures: {
+      field: "course_slug",
+      options: [
+        ["all", "All courses"],
         ["teaching-learning", "Teaching & Learning"],
         ["educational-leadership", "Educational Leadership"],
         ["cpd-online", "CPD Online"],
@@ -176,6 +204,7 @@
   function getRecordTitle(record) {
     if (currentType === "results" || currentType === "testimonials") return record.name;
     if (currentType === "gallery") return record.description;
+    if (currentType === "brochures") return record.title;
     return record.course;
   }
 
@@ -183,6 +212,7 @@
     if (currentType === "results") return [record.designation, record.school].filter(Boolean).join(" | ");
     if (currentType === "gallery") return `Order ${record.sort_order ?? 100}`;
     if (currentType === "commencements") return record.display_date || formatDate(record.commencement_date);
+    if (currentType === "brochures") return record.course_slug;
     return [record.testimonial_type, record.course_slug].filter(Boolean).join(" | ");
   }
 
@@ -491,7 +521,11 @@
       input.accept = field.accept || "";
       label.className = "admin-upload";
       const help = document.createElement("small");
-      help.textContent = field.accept?.includes("video") ? "MP4 or WebM, up to 50 MB." : "JPEG, PNG or WebP.";
+      help.textContent = field.accept?.includes("application/pdf")
+        ? "PDF, up to 50 MB."
+        : field.accept?.includes("video")
+          ? "MP4 or WebM, up to 50 MB."
+          : "JPEG, PNG or WebP.";
       const progress = document.createElement("p");
       progress.className = "admin-upload-progress";
       progress.dataset.uploadProgress = field.name;
@@ -630,7 +664,10 @@
       closeEditor();
       await loadRecords();
     } catch (error) {
-      setMessage(dashboardMessage, error.message || "The entry could not be saved.", true);
+      const message = currentType === "brochures" && error.code === "23505"
+        ? "A brochure already exists for this course. Edit the existing entry instead."
+        : error.message || "The entry could not be saved.";
+      setMessage(dashboardMessage, message, true);
     } finally {
       submit.disabled = false;
     }
@@ -651,86 +688,6 @@
     setMessage(dashboardMessage, "Deleted.");
     if (editingRecord?.id === record.id) closeEditor();
     await loadRecords();
-  }
-
-  function currentApiImport(type, payload) {
-    if (type === "results") {
-      return (payload.results || []).map((item) => ({
-        name: item.name,
-        designation: item.designation || null,
-        school: item.school || null,
-        city: item.city || null,
-        course: item.course,
-        course_group: item.courseGroup,
-        score: item.score || null,
-        photo_url: item.photoUrl || null,
-        featured: Boolean(item.featured),
-        published: true,
-        sort_order: item.sortOrder ?? 100,
-        created_by: currentUser.id
-      }));
-    }
-
-    if (type === "gallery") {
-      return (payload.gallery || []).map((item) => ({
-        description: item.description,
-        image_url: item.imageUrl,
-        published: true,
-        sort_order: item.sortOrder ?? 100,
-        created_by: currentUser.id
-      }));
-    }
-
-    if (type === "commencements") {
-      return (payload.commencements || []).map((item) => ({
-        course: item.course,
-        course_group: item.courseGroup,
-        display_date: item.commencementDate,
-        label: item.label || "New Cohort Commencement Date",
-        url: item.url || null,
-        published: true,
-        sort_order: item.sortOrder ?? 100,
-        created_by: currentUser.id
-      }));
-    }
-
-    return [];
-  }
-
-  async function importCurrentData() {
-    if (currentType === "testimonials") {
-      setMessage(dashboardMessage, "Existing testimonials are stored in the page HTML and should be added through this dashboard.", true);
-      return;
-    }
-
-    if (records.length && !window.confirm(`There are already ${records.length} entries here. Importing may create duplicates. Continue?`)) {
-      return;
-    }
-
-    const endpoint = currentType === "commencements" ? "commencements" : currentType;
-    setMessage(dashboardMessage, "Importing current content...");
-    importRecordsButton.disabled = true;
-
-    try {
-      const response = await fetch(`/api/${endpoint}`, { cache: "no-store" });
-      if (!response.ok) throw new Error("The current content API could not be loaded.");
-      const payload = await response.json();
-      if (payload.source === "supabase") {
-        throw new Error("The public website is already reading Supabase; no import is needed.");
-      }
-
-      const rows = currentApiImport(currentType, payload);
-      if (!rows.length) throw new Error("No current records were found to import.");
-      const { error } = await client.from(schemas[currentType].table).insert(rows);
-      if (error) throw error;
-
-      setMessage(dashboardMessage, `${rows.length} entries imported.`);
-      await loadRecords();
-    } catch (error) {
-      setMessage(dashboardMessage, error.message || "Import failed.", true);
-    } finally {
-      importRecordsButton.disabled = false;
-    }
   }
 
   async function loadRecords() {
@@ -832,7 +789,6 @@
   loginForm.addEventListener("submit", handleLogin);
   signoutButton.addEventListener("click", signOut);
   newRecordButton.addEventListener("click", () => openEditor());
-  importRecordsButton.addEventListener("click", importCurrentData);
   closeEditorButton.addEventListener("click", closeEditor);
   recordSearch.addEventListener("input", () => {
     listFilters.query = recordSearch.value.trim();
@@ -867,7 +823,6 @@
     button.addEventListener("click", async () => {
       currentType = button.dataset.adminTab;
       tabButtons.forEach((item) => item.classList.toggle("is-active", item === button));
-      importRecordsButton.hidden = currentType === "testimonials";
       closeEditor();
       setMessage(dashboardMessage, "");
       configureListTools();

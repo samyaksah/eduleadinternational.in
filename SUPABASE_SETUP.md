@@ -19,6 +19,11 @@ If the original migration was run before June 28, 2026, also run
 `supabase/migrations/202606280001_derive_result_course_group.sql`. This lets
 older Results CSV files omit the internal `course_group` column.
 
+For an existing project, also run
+`supabase/migrations/202606280002_course_brochures.sql`. This adds secure
+course brochure records. The existing `site-media` bucket already accepts PDF
+uploads.
+
 ## 2. Create the first administrator
 
 1. In Supabase, open **Authentication > Users**.
@@ -61,16 +66,13 @@ code is deployed, `/admin` can already connect to Supabase and accept content.
 5. Confirm that draft records do not appear publicly.
 6. Publish one record and verify it in the Supabase dashboard.
 
-Use **Import current data** in the Results, Gallery, and Commencement tabs to
-copy the existing Google Sheet-backed records into Supabase. The import remains
-private until the public source is switched. Testimonials should be added in
-the dashboard because the existing testimonials are currently stored directly
-in the page HTML.
+Use the Brochures tab to upload or replace the PDF for each course. Keep only
+one brochure entry per course and publish it when it is ready.
 
 ## 5. Switch the public website
 
-After Results, Gallery, Commencement Dates, and Testimonials have been loaded
-and checked, add this Netlify environment variable:
+After Results, Gallery, Commencement Dates, Testimonials, and Brochures have
+been loaded and checked, add this Netlify environment variable:
 
 | Key | Value |
 | --- | --- |
@@ -82,6 +84,7 @@ Trigger a Netlify deployment. The public API endpoints will then read Supabase:
 - `/api/gallery`
 - `/api/commencements`
 - `/api/testimonials`
+- `/api/brochures`
 
 Removing `CONTENT_SOURCE` or changing it away from `supabase` returns the
 existing Results, Gallery, and Commencement APIs to their Google Sheet sources.

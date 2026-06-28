@@ -25,6 +25,12 @@ const testimonials = [
   }
 ];
 
+if (window.location.protocol === "file:") {
+  document.querySelectorAll('a[href="/"]').forEach((link) => {
+    link.setAttribute("href", "index.html");
+  });
+}
+
 const menuButton = document.querySelector(".menu-toggle");
 const nav = document.querySelector(".site-nav");
 const headerCta = document.querySelector(".header-cta");
@@ -40,6 +46,7 @@ const courseVisualImages = document.querySelectorAll(".course-visual img, .brain
 const testimonialPortraits = document.querySelectorAll("[data-testimonial-portrait]");
 const testimonialVideoPlayers = document.querySelectorAll("[data-testimonial-video]");
 const testimonialContainers = document.querySelectorAll("[data-testimonials-course][data-testimonials-type]");
+const brochureLinks = document.querySelectorAll("[data-course-brochure]");
 const playlistPlayer = document.querySelector("#playlist-player");
 const playlistTitle = document.querySelector("#playlist-title");
 const playlistDescription = document.querySelector("#playlist-description");
@@ -85,6 +92,8 @@ let learningCarouselTimer;
 let heroCarouselIndex = 0;
 let heroCarouselTimer;
 let heroCarouselTouchStart = 0;
+let testimonialModal;
+let testimonialModalLastTrigger;
 
 if (nav && headerCta && !nav.querySelector(".mobile-nav-cta")) {
   const mobileCta = headerCta.cloneNode(true);
@@ -116,6 +125,123 @@ function setupTestimonialPortrait(image) {
 }
 
 testimonialPortraits.forEach(setupTestimonialPortrait);
+
+function ensureTestimonialModal() {
+  if (testimonialModal) return testimonialModal;
+
+  const modal = document.createElement("div");
+  modal.className = "testimonial-modal";
+  modal.hidden = true;
+  modal.innerHTML = `
+    <button class="testimonial-modal-backdrop" type="button" tabindex="-1" data-testimonial-modal-close aria-label="Close testimonial"></button>
+    <section class="testimonial-dialog" role="dialog" aria-modal="true" aria-labelledby="testimonial-modal-title">
+      <button class="modal-close" type="button" data-testimonial-modal-close aria-label="Close testimonial">&times;</button>
+      <div class="testimonial-dialog-person">
+        <div class="testimonial-dialog-photo">
+          <span data-testimonial-modal-initials aria-hidden="true">EL</span>
+          <img data-testimonial-modal-image alt="" hidden>
+        </div>
+        <div>
+          <p class="kicker">Full testimonial</p>
+          <h2 id="testimonial-modal-title" data-testimonial-modal-name>Testimonial</h2>
+          <p data-testimonial-modal-meta></p>
+        </div>
+      </div>
+      <blockquote data-testimonial-modal-quote></blockquote>
+    </section>
+  `;
+  document.body.appendChild(modal);
+  modal.querySelectorAll("[data-testimonial-modal-close]").forEach((button) => {
+    button.addEventListener("click", closeTestimonialModal);
+  });
+  testimonialModal = modal;
+  return modal;
+}
+
+function testimonialCardDetails(card, quote) {
+  const writtenPerson = card.querySelector(".testimonial-person");
+  const name = writtenPerson?.querySelector("strong")?.textContent.trim()
+    || card.querySelector(":scope > strong")?.textContent.trim()
+    || "Edu Lead participant";
+  const designation = writtenPerson?.querySelector(":scope > span")?.textContent.trim()
+    || writtenPerson?.querySelector(":scope > div:last-child > span")?.textContent.trim()
+    || "";
+  const school = writtenPerson?.querySelector("small")?.textContent.trim() || "";
+  const compactMeta = card.querySelector(":scope > span")?.textContent.trim() || "";
+  const portrait = card.querySelector("[data-testimonial-portrait]");
+  const fallback = card.querySelector(".person-photo > span, .student-avatar > span");
+
+  return {
+    name,
+    meta: [designation, school].filter(Boolean).join(" | ") || compactMeta,
+    quote: quote.textContent.trim(),
+    portraitUrl: portrait?.dataset.src || portrait?.src || "",
+    initials: fallback?.textContent.trim() || getInitials(name) || "EL"
+  };
+}
+
+function openTestimonialModal(card, quote, trigger) {
+  const modal = ensureTestimonialModal();
+  const details = testimonialCardDetails(card, quote);
+  const image = modal.querySelector("[data-testimonial-modal-image]");
+  const initials = modal.querySelector("[data-testimonial-modal-initials]");
+
+  modal.querySelector("[data-testimonial-modal-name]").textContent = details.name;
+  modal.querySelector("[data-testimonial-modal-meta]").textContent = details.meta;
+  modal.querySelector("[data-testimonial-modal-quote]").textContent = details.quote;
+  initials.textContent = details.initials;
+  image.hidden = true;
+  image.removeAttribute("src");
+  image.alt = "";
+
+  if (details.portraitUrl) {
+    const portrait = new Image();
+    portrait.onload = () => {
+      image.src = details.portraitUrl;
+      image.alt = details.name;
+      image.hidden = false;
+    };
+    portrait.src = details.portraitUrl;
+  }
+
+  testimonialModalLastTrigger = trigger;
+  modal.hidden = false;
+  document.body.classList.add("modal-open");
+  modal.querySelector(".modal-close")?.focus();
+}
+
+function closeTestimonialModal() {
+  if (!testimonialModal) return;
+  testimonialModal.hidden = true;
+  document.body.classList.remove("modal-open");
+  testimonialModalLastTrigger?.focus();
+  testimonialModalLastTrigger = null;
+}
+
+function initializeTestimonialReadMore(root = document) {
+  const quotes = root.querySelectorAll(
+    ".written-testimonial-card .written-testimonial-content > p, .written-testimonial-card > p, .student-testimonial-grid article > p"
+  );
+
+  quotes.forEach((quote) => {
+    quote.classList.add("testimonial-quote");
+    const card = quote.closest("article");
+    if (!card) return;
+    const existingButton = card.querySelector(".testimonial-read-more");
+    if (!quote.textContent.trim()) {
+      existingButton?.remove();
+      return;
+    }
+    if (existingButton) return;
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "testimonial-read-more";
+    button.textContent = "Read full testimonial";
+    button.addEventListener("click", () => openTestimonialModal(card, quote, button));
+    quote.insertAdjacentElement("afterend", button);
+  });
+}
 
 function getGoogleDrivePreviewUrl(source) {
   const filePathMatch = source.match(/drive\.google\.com\/file\/d\/([^/?#]+)/i);
@@ -158,6 +284,8 @@ function setupTestimonialVideo(player) {
 }
 
 testimonialVideoPlayers.forEach(setupTestimonialVideo);
+
+requestAnimationFrame(() => initializeTestimonialReadMore());
 
 if (heroCarouselDotsContainer) {
   heroCarouselDotsContainer.innerHTML = Array.from(heroCarouselSlides, (_, index) => `
@@ -888,6 +1016,7 @@ function renderDynamicTestimonials(items) {
     container.dataset.itemCount = String(matches.length);
     container.querySelectorAll("[data-testimonial-portrait]").forEach(setupTestimonialPortrait);
     container.querySelectorAll("[data-testimonial-video]").forEach(setupTestimonialVideo);
+    requestAnimationFrame(() => initializeTestimonialReadMore(container));
     updateCarouselControls(container);
   });
 }
@@ -906,8 +1035,36 @@ async function loadTestimonials() {
   }
 }
 
+async function loadBrochures() {
+  if (!brochureLinks.length) return;
+
+  try {
+    const response = await fetch("/api/brochures");
+    if (!response.ok) throw new Error("Brochures unavailable");
+    const payload = await response.json();
+    if (!payload.brochures?.length) return;
+
+    brochureLinks.forEach((link) => {
+      const brochure = payload.brochures.find(
+        (item) => item.courseSlug === link.dataset.courseBrochure && item.fileUrl
+      );
+      if (!brochure) return;
+
+      link.href = brochure.fileUrl;
+      link.textContent = "Download Brochure";
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.removeAttribute("download");
+      link.dataset.directBrochure = "true";
+    });
+  } catch (error) {
+    // Keep each page's existing local download or enquiry link as a fallback.
+  }
+}
+
 enquiryTriggers.forEach((trigger) => {
   trigger.addEventListener("click", (event) => {
+    if (trigger.dataset.directBrochure === "true") return;
     const didOpen = openEnquiryModal(trigger.dataset.enquiryCourse);
     if (didOpen) event.preventDefault();
   });
@@ -918,6 +1075,10 @@ enquiryCloseButtons.forEach((button) => {
 });
 
 document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && testimonialModal && !testimonialModal.hidden) {
+    closeTestimonialModal();
+  }
+
   if (event.key === "Escape" && enquiryModal && !enquiryModal.hidden) {
     closeEnquiryModal();
   }
@@ -1145,3 +1306,4 @@ loadResults();
 loadCommencements();
 loadGallery();
 loadTestimonials();
+loadBrochures();

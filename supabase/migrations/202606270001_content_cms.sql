@@ -91,6 +91,20 @@ create table if not exists public.testimonials (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.course_brochures (
+  id uuid primary key default gen_random_uuid(),
+  course_slug text not null unique check (
+    course_slug in ('teaching-learning', 'educational-leadership', 'cpd-online', 'certified-training')
+  ),
+  title text not null,
+  file_url text not null,
+  published boolean not null default false,
+  sort_order integer not null default 100,
+  created_by uuid references auth.users(id) on delete set null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 create or replace function public.derive_result_course_group()
 returns trigger
 language plpgsql
@@ -158,22 +172,29 @@ create trigger set_testimonials_updated_at
 before update on public.testimonials
 for each row execute function public.set_updated_at();
 
+drop trigger if exists set_course_brochures_updated_at on public.course_brochures;
+create trigger set_course_brochures_updated_at
+before update on public.course_brochures
+for each row execute function public.set_updated_at();
+
 alter table public.admin_users enable row level security;
 alter table public.results enable row level security;
 alter table public.gallery_items enable row level security;
 alter table public.commencement_dates enable row level security;
 alter table public.testimonials enable row level security;
+alter table public.course_brochures enable row level security;
 
 revoke all on public.admin_users from anon, authenticated;
 revoke all on public.results from anon, authenticated;
 revoke all on public.gallery_items from anon, authenticated;
 revoke all on public.commencement_dates from anon, authenticated;
 revoke all on public.testimonials from anon, authenticated;
+revoke all on public.course_brochures from anon, authenticated;
 
 grant select on public.admin_users to authenticated;
-grant select on public.results, public.gallery_items, public.commencement_dates, public.testimonials to anon;
+grant select on public.results, public.gallery_items, public.commencement_dates, public.testimonials, public.course_brochures to anon;
 grant select, insert, update, delete
-  on public.results, public.gallery_items, public.commencement_dates, public.testimonials
+  on public.results, public.gallery_items, public.commencement_dates, public.testimonials, public.course_brochures
   to authenticated;
 
 drop policy if exists "Admins can read their profile" on public.admin_users;
@@ -230,6 +251,19 @@ using (published = true);
 drop policy if exists "Admins manage testimonials" on public.testimonials;
 create policy "Admins manage testimonials"
 on public.testimonials for all
+to authenticated
+using ((select public.is_admin()))
+with check ((select public.is_admin()));
+
+drop policy if exists "Published course brochures are public" on public.course_brochures;
+create policy "Published course brochures are public"
+on public.course_brochures for select
+to anon, authenticated
+using (published = true);
+
+drop policy if exists "Admins manage course brochures" on public.course_brochures;
+create policy "Admins manage course brochures"
+on public.course_brochures for all
 to authenticated
 using ((select public.is_admin()))
 with check ((select public.is_admin()));
