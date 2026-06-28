@@ -457,40 +457,6 @@ h3 {
   transform: scale(1);
 }
 
-.hero-carousel-slide::after {
-  content: "";
-  position: absolute;
-  inset: 34% 0 0;
-  background: linear-gradient(180deg, transparent, rgba(9, 31, 50, 0.88));
-  pointer-events: none;
-}
-
-.hero-carousel-slide figcaption {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 2;
-  display: grid;
-  gap: 5px;
-  padding: clamp(24px, 4vw, 38px);
-  color: var(--white);
-}
-
-.hero-carousel-slide figcaption small {
-  color: #ffd6d1;
-  font-size: 0.76rem;
-  font-weight: 900;
-  text-transform: uppercase;
-}
-
-.hero-carousel-slide figcaption strong {
-  max-width: 440px;
-  font-family: "Inter Tight", Inter, sans-serif;
-  font-size: clamp(1.4rem, 2.6vw, 2.25rem);
-  line-height: 1.04;
-}
-
 .hero-carousel-controls {
   display: grid;
   grid-template-columns: 42px auto 42px;
@@ -4857,6 +4823,66 @@ body.modal-open {
   font-weight: 800;
 }
 
+.error-page {
+  display: grid;
+  min-height: calc(100vh - 92px);
+  background:
+    linear-gradient(180deg, rgba(223, 246, 249, 0.72), rgba(255, 255, 255, 0) 68%);
+}
+
+.error-hero {
+  align-self: center;
+  width: min(100%, 980px);
+  margin: 0 auto;
+  padding: clamp(64px, 9vw, 112px) var(--page-pad);
+  text-align: center;
+}
+
+.error-code {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(12px, 2vw, 26px);
+  margin-bottom: 26px;
+  color: var(--blue-deep);
+  font-family: "Inter Tight", Inter, sans-serif;
+  font-size: clamp(7rem, 18vw, 13rem);
+  font-weight: 900;
+  line-height: 0.72;
+}
+
+.error-code img {
+  width: clamp(88px, 11vw, 142px);
+  height: clamp(88px, 11vw, 142px);
+  border-radius: 50%;
+}
+
+.error-hero h1 {
+  max-width: 800px;
+  margin-bottom: 24px;
+  font-size: clamp(2.7rem, 6vw, 5rem);
+}
+
+.error-hero > p:not(.kicker) {
+  max-width: 650px;
+  margin: 0 auto 34px;
+  color: var(--muted);
+  font-size: 1.12rem;
+  line-height: 1.6;
+}
+
+.error-hero .hero-actions {
+  justify-content: center;
+}
+
+.error-text-link {
+  align-self: center;
+  padding: 12px 4px;
+  color: var(--blue);
+  font-weight: 800;
+  text-underline-offset: 4px;
+}
+
 @media (max-width: 1040px) {
   .training,
   .impact,
@@ -5471,11 +5497,47 @@ body.modal-open {
     font-size: 1rem;
   }
 
+  .error-page {
+    min-height: auto;
+  }
+
+  .error-hero {
+    padding-top: 72px;
+    padding-bottom: 78px;
+  }
+
+  .error-code {
+    margin-bottom: 30px;
+    font-size: clamp(6rem, 30vw, 8rem);
+  }
+
+  .error-code img {
+    width: 76px;
+    height: 76px;
+  }
+
+  .error-hero h1 {
+    font-size: clamp(2.25rem, 10.5vw, 3rem);
+  }
+
+  .error-hero .hero-actions {
+    display: grid;
+    width: 100%;
+  }
+
+  .error-hero .button {
+    width: 100%;
+  }
+
   h1,
   .programme-hero h1,
   .page-hero h1 {
-    font-size: clamp(2.55rem, 12vw, 4rem);
+    font-size: clamp(2.35rem, 10.5vw, 3.25rem);
     overflow-wrap: anywhere;
+  }
+
+  .hero-copy h1 {
+    width: 100%;
   }
 
   h2 {
@@ -5488,6 +5550,16 @@ body.modal-open {
     min-height: 44px;
     margin-bottom: 42px;
     padding: 8px 16px;
+    text-align: left;
+  }
+
+  .commencement-grid a {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 5px;
+  }
+
+  .commencement-grid span {
+    min-width: 0;
     text-align: left;
   }
 
@@ -5751,15 +5823,6 @@ body.modal-open {
 
   .hero-carousel-viewport {
     border-radius: 18px;
-  }
-
-  .hero-carousel-slide figcaption {
-    gap: 4px;
-    padding: 20px;
-  }
-
-  .hero-carousel-slide figcaption strong {
-    font-size: 1.35rem;
   }
 
   .hero-carousel-controls {

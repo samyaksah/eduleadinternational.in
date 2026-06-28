@@ -768,7 +768,7 @@ function renderGalleryItem(item, index) {
   const image = item.imageUrl || item.image_url || "";
 
   return `
-    <button type="button" class="gallery-item" data-gallery-title="Gallery image" data-gallery-description="${escapeHtml(description)}" data-gallery-image="${escapeHtml(image)}">
+    <button type="button" class="gallery-item" data-gallery-title="${escapeHtml(description || "Edu Lead training gallery image")}" data-gallery-description="${escapeHtml(description)}" data-gallery-image="${escapeHtml(image)}">
       <span class="gallery-item-media" aria-hidden="true"><strong>${number}</strong></span>
       <span class="gallery-item-copy"><small>${escapeHtml(description)}</small></span>
     </button>
@@ -869,7 +869,6 @@ function testimonialsForContainer(items, container) {
   return items.filter((item) => {
     if (item.type !== type) return false;
     if (course === "all") return true;
-    if (course === "general") return item.courseSlug === "general" || item.featured;
     return item.courseSlug === course;
   });
 }

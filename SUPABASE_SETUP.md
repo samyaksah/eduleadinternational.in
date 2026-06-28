@@ -15,6 +15,10 @@ This creates the content tables, private administrator permissions, and the
 public `site-media` bucket. Website visitors can view published content and
 media, but only approved administrators can upload or change anything.
 
+If the original migration was run before June 28, 2026, also run
+`supabase/migrations/202606280001_derive_result_course_group.sql`. This lets
+older Results CSV files omit the internal `course_group` column.
+
 ## 2. Create the first administrator
 
 1. In Supabase, open **Authentication > Users**.

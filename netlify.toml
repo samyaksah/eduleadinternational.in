@@ -2,6 +2,11 @@
   publish = "."
 
 [[redirects]]
+  from = "/index.html"
+  to = "/"
+  status = 301
+
+[[redirects]]
   from = "/admin"
   to = "/admin.html"
   status = 200
@@ -45,3 +50,18 @@
     X-Content-Type-Options = "nosniff"
     X-Frame-Options = "DENY"
     X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/thank-you.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/404.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, follow"
+
+[[headers]]
+  for = "/testimonials.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, follow"

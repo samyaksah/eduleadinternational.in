@@ -10,7 +10,7 @@
 </head>
 <body>
   <header class="admin-header">
-    <a class="admin-brand" href="index.html" aria-label="Return to Edu Lead International">
+    <a class="admin-brand" href="/" aria-label="Return to Edu Lead International">
       <img src="assets/logo/edu-lead-logo.svg" alt="">
       <span><strong>Edu Lead</strong><small>Content administration</small></span>
     </a>
@@ -65,6 +65,33 @@
             </div>
             <span data-record-count></span>
           </div>
+          <div class="admin-list-tools">
+            <label class="admin-search">
+              <span>Search entries</span>
+              <input type="search" data-record-search placeholder="Search by name, school, course, or city">
+            </label>
+            <div class="admin-list-tabs" data-record-filter-tabs aria-label="Filter entries"></div>
+            <div class="admin-filter-row">
+              <label data-type-filter-wrap hidden>
+                Testimonial type
+                <select data-type-filter>
+                  <option value="all">All types</option>
+                  <option value="written">Written</option>
+                  <option value="video">Video</option>
+                </select>
+              </label>
+              <label>
+                Publication status
+                <select data-status-filter>
+                  <option value="all">All entries</option>
+                  <option value="published">Published</option>
+                  <option value="draft">Draft</option>
+                </select>
+              </label>
+              <button type="button" class="admin-clear-filters" data-clear-filters>Clear filters</button>
+            </div>
+            <p class="admin-order-help" data-order-help>Drag entries to change their display order.</p>
+          </div>
           <div class="admin-record-list" data-record-list></div>
         </section>
 
@@ -85,6 +112,6 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.8/dist/umd/supabase.min.js"></script>
-  <script src="admin.js"></script>
+  <script src="admin.js?v=20260628-admin-list-tools"></script>
 </body>
 </html>
