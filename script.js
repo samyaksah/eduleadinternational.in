@@ -37,6 +37,9 @@ const testimonialButtons = document.querySelectorAll(".testimonial-controls butt
 const instagramFeed = document.querySelector("#instagram-feed");
 const courseCards = document.querySelectorAll("[data-course-card]");
 const courseVisualImages = document.querySelectorAll(".course-visual img, .brain-visual img");
+const testimonialPortraits = document.querySelectorAll("[data-testimonial-portrait]");
+const testimonialVideoPlayers = document.querySelectorAll("[data-testimonial-video]");
+const testimonialContainers = document.querySelectorAll("[data-testimonials-course][data-testimonials-type]");
 const playlistPlayer = document.querySelector("#playlist-player");
 const playlistTitle = document.querySelector("#playlist-title");
 const playlistDescription = document.querySelector("#playlist-description");
@@ -70,9 +73,18 @@ const certificatePreviewImage = document.querySelector("[data-certificate-previe
 const certificatePreviewTitle = document.querySelector("[data-certificate-preview-title]");
 const certificatePreviewPlaceholder = document.querySelector("[data-certificate-preview-placeholder]");
 const certificatePreview = certificatePreviewImage?.closest(".certificate-preview");
+const heroCarousel = document.querySelector("[data-hero-carousel]");
+const heroCarouselSlides = heroCarousel?.querySelectorAll("[data-hero-slide]") || [];
+const heroCarouselDotsContainer = heroCarousel?.querySelector("[data-hero-carousel-dots]");
+const heroCarouselPrevious = heroCarousel?.querySelector("[data-hero-carousel-previous]");
+const heroCarouselNext = heroCarousel?.querySelector("[data-hero-carousel-next]");
+let heroCarouselDots = [];
 let testimonialIndex = 0;
 let writtenTestimonialsTimer;
 let learningCarouselTimer;
+let heroCarouselIndex = 0;
+let heroCarouselTimer;
+let heroCarouselTouchStart = 0;
 
 if (nav && headerCta && !nav.querySelector(".mobile-nav-cta")) {
   const mobileCta = headerCta.cloneNode(true);
@@ -87,6 +99,167 @@ courseVisualImages.forEach((image) => {
     image.hidden = true;
   });
 });
+
+function setupTestimonialPortrait(image) {
+  const source = image.dataset.src;
+  if (!source) return;
+
+  const portrait = new Image();
+  portrait.onload = () => {
+    image.src = source;
+    image.hidden = false;
+  };
+  portrait.onerror = () => {
+    image.hidden = true;
+  };
+  portrait.src = source;
+}
+
+testimonialPortraits.forEach(setupTestimonialPortrait);
+
+function getGoogleDrivePreviewUrl(source) {
+  const filePathMatch = source.match(/drive\.google\.com\/file\/d\/([^/?#]+)/i);
+  const fileIdMatch = source.match(/[?&]id=([^&#]+)/i);
+  const fileId = filePathMatch?.[1] || fileIdMatch?.[1];
+  return fileId ? `https://drive.google.com/file/d/${encodeURIComponent(fileId)}/preview` : "";
+}
+
+function setupTestimonialVideo(player) {
+  const source = player.dataset.videoUrl?.trim();
+  if (!source) return;
+
+  const title = player.dataset.videoTitle || "Video testimonial";
+  const drivePreviewUrl = getGoogleDrivePreviewUrl(source);
+
+  if (drivePreviewUrl) {
+    const iframe = document.createElement("iframe");
+    iframe.src = drivePreviewUrl;
+    iframe.title = title;
+    iframe.loading = "lazy";
+    iframe.allow = "autoplay; fullscreen";
+    iframe.referrerPolicy = "strict-origin-when-cross-origin";
+    iframe.setAttribute("allowfullscreen", "");
+    player.replaceChildren(iframe);
+    player.classList.add("has-video");
+    return;
+  }
+
+  if (/\.(mp4|webm|ogg)(?:[?#].*)?$/i.test(source)) {
+    const video = document.createElement("video");
+    video.src = source;
+    video.controls = true;
+    video.playsInline = true;
+    video.preload = "metadata";
+    if (player.dataset.videoThumbnail) video.poster = player.dataset.videoThumbnail;
+    video.setAttribute("aria-label", title);
+    player.replaceChildren(video);
+    player.classList.add("has-video");
+  }
+}
+
+testimonialVideoPlayers.forEach(setupTestimonialVideo);
+
+if (heroCarouselDotsContainer) {
+  heroCarouselDotsContainer.innerHTML = Array.from(heroCarouselSlides, (_, index) => `
+    <button
+      type="button"
+      data-hero-carousel-dot="${index}"
+      aria-label="Show image ${index + 1}"
+      aria-current="${index === 0}"
+      class="${index === 0 ? "is-active" : ""}"
+    ></button>
+  `).join("");
+  heroCarouselDotsContainer.classList.toggle("is-many", heroCarouselSlides.length > 6);
+  heroCarouselDots = heroCarouselDotsContainer.querySelectorAll("[data-hero-carousel-dot]");
+}
+
+function showHeroCarouselSlide(index) {
+  if (!heroCarouselSlides.length) return;
+
+  heroCarouselIndex = (index + heroCarouselSlides.length) % heroCarouselSlides.length;
+
+  heroCarouselSlides.forEach((slide, slideIndex) => {
+    const isActive = slideIndex === heroCarouselIndex;
+    slide.classList.toggle("is-active", isActive);
+    slide.setAttribute("aria-hidden", String(!isActive));
+  });
+
+  heroCarouselDots.forEach((dot, dotIndex) => {
+    const isActive = dotIndex === heroCarouselIndex;
+    dot.classList.toggle("is-active", isActive);
+    dot.setAttribute("aria-current", String(isActive));
+  });
+}
+
+function stopHeroCarouselAutoplay() {
+  if (!heroCarouselTimer) return;
+  window.clearInterval(heroCarouselTimer);
+  heroCarouselTimer = undefined;
+}
+
+function startHeroCarouselAutoplay() {
+  if (
+    heroCarouselSlides.length < 2 ||
+    document.hidden ||
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  ) {
+    return;
+  }
+
+  stopHeroCarouselAutoplay();
+  heroCarouselTimer = window.setInterval(() => {
+    showHeroCarouselSlide(heroCarouselIndex + 1);
+  }, 5000);
+}
+
+function moveHeroCarousel(direction) {
+  showHeroCarouselSlide(heroCarouselIndex + direction);
+}
+
+if (heroCarousel) {
+  heroCarouselPrevious?.addEventListener("click", () => moveHeroCarousel(-1));
+  heroCarouselNext?.addEventListener("click", () => moveHeroCarousel(1));
+
+  heroCarouselDots.forEach((dot) => {
+    dot.addEventListener("click", () => {
+      showHeroCarouselSlide(Number(dot.dataset.heroCarouselDot));
+    });
+  });
+
+  heroCarousel.addEventListener("mouseenter", stopHeroCarouselAutoplay);
+  heroCarousel.addEventListener("mouseleave", startHeroCarouselAutoplay);
+  heroCarousel.addEventListener("focusin", stopHeroCarouselAutoplay);
+  heroCarousel.addEventListener("focusout", (event) => {
+    if (!heroCarousel.contains(event.relatedTarget)) {
+      startHeroCarouselAutoplay();
+    }
+  });
+  heroCarousel.addEventListener("touchstart", (event) => {
+    heroCarouselTouchStart = event.changedTouches[0]?.clientX || 0;
+    stopHeroCarouselAutoplay();
+  }, { passive: true });
+  heroCarousel.addEventListener("touchend", (event) => {
+    const touchEnd = event.changedTouches[0]?.clientX || 0;
+    const distance = touchEnd - heroCarouselTouchStart;
+
+    if (Math.abs(distance) > 48) {
+      showHeroCarouselSlide(heroCarouselIndex + (distance < 0 ? 1 : -1));
+    }
+
+    startHeroCarouselAutoplay();
+  }, { passive: true });
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      stopHeroCarouselAutoplay();
+    } else {
+      startHeroCarouselAutoplay();
+    }
+  });
+
+  showHeroCarouselSlide(0);
+  startHeroCarouselAutoplay();
+}
 
 function updateCommencementStripState() {
   if (!commencementStrip) return;
@@ -471,13 +644,13 @@ function closeEnquiryModal() {
 }
 
 function setCertificatePreviewImage(src, title) {
-  if (!certificatePreviewImage || !certificatePreviewPlaceholder) return;
+  if (!certificatePreviewImage) return;
 
   certificatePreview?.classList.remove("is-loaded");
   certificatePreviewImage.hidden = true;
   certificatePreviewImage.removeAttribute("src");
   certificatePreviewImage.alt = "";
-  certificatePreviewPlaceholder.hidden = false;
+  if (certificatePreviewPlaceholder) certificatePreviewPlaceholder.hidden = false;
 
   if (!src) return;
 
@@ -486,13 +659,13 @@ function setCertificatePreviewImage(src, title) {
     certificatePreviewImage.src = src;
     certificatePreviewImage.alt = `${title} preview`;
     certificatePreviewImage.hidden = false;
-    certificatePreviewPlaceholder.hidden = true;
+    if (certificatePreviewPlaceholder) certificatePreviewPlaceholder.hidden = true;
     certificatePreview?.classList.add("is-loaded");
   };
   preview.onerror = () => {
     certificatePreview?.classList.remove("is-loaded");
     certificatePreviewImage.hidden = true;
-    certificatePreviewPlaceholder.hidden = false;
+    if (certificatePreviewPlaceholder) certificatePreviewPlaceholder.hidden = false;
   };
   preview.src = src;
 }
@@ -626,6 +799,114 @@ async function loadGallery() {
   }
 }
 
+function testimonialMeta(item) {
+  return [item.designation, item.school, item.city].filter(Boolean).join(", ");
+}
+
+function renderTestimonialPortrait(item, className) {
+  const initials = escapeHtml(getInitials(item.name) || "EL");
+  const portrait = item.portraitUrl
+    ? `<img class="testimonial-portrait" data-testimonial-portrait data-src="${escapeHtml(item.portraitUrl)}" alt="${escapeHtml(item.name)}" hidden>`
+    : "";
+
+  return `<div class="${className}"><span aria-hidden="true">${initials}</span>${portrait}</div>`;
+}
+
+function renderWrittenTestimonial(item, container) {
+  const meta = testimonialMeta(item);
+
+  if (container.classList.contains("student-testimonial-grid")) {
+    return `
+      <article>
+        ${renderTestimonialPortrait(item, "student-avatar")}
+        <p>${escapeHtml(item.quote)}</p>
+        <strong>${escapeHtml(item.name)}</strong>
+        ${meta ? `<span>${escapeHtml(meta)}</span>` : ""}
+      </article>
+    `;
+  }
+
+  return `
+    <article class="written-testimonial-card">
+      ${renderTestimonialPortrait(item, "person-photo")}
+      <div class="written-testimonial-content">
+        <div><span class="quote-mark" aria-hidden="true">&ldquo;</span></div>
+        <p>${escapeHtml(item.quote)}</p>
+        <div class="testimonial-person">
+          <strong>${escapeHtml(item.name)}</strong>
+          ${item.designation ? `<span>${escapeHtml(item.designation)}</span>` : ""}
+          ${[item.school, item.city].filter(Boolean).length ? `<small>${escapeHtml([item.school, item.city].filter(Boolean).join(", "))}</small>` : ""}
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function renderVideoTestimonial(item) {
+  const meta = testimonialMeta(item);
+
+  return `
+    <article class="video-testimonial-card">
+      <div
+        class="local-video-placeholder"
+        data-testimonial-video
+        data-video-url="${escapeHtml(item.videoUrl)}"
+        data-video-thumbnail="${escapeHtml(item.videoThumbnailUrl || "")}"
+        data-video-title="Video testimonial from ${escapeHtml(item.name)}"
+      ><span>Video testimonial</span></div>
+      <div>
+        <h3>${escapeHtml(item.name)}</h3>
+        ${meta ? `<p>${escapeHtml(meta)}</p>` : ""}
+      </div>
+    </article>
+  `;
+}
+
+function testimonialsForContainer(items, container) {
+  const type = container.dataset.testimonialsType;
+  const course = container.dataset.testimonialsCourse;
+
+  return items.filter((item) => {
+    if (item.type !== type) return false;
+    if (course === "all") return true;
+    if (course === "general") return item.courseSlug === "general" || item.featured;
+    return item.courseSlug === course;
+  });
+}
+
+function renderDynamicTestimonials(items) {
+  testimonialContainers.forEach((container) => {
+    const matches = testimonialsForContainer(items, container);
+    if (!matches.length) return;
+
+    container.innerHTML = matches
+      .map((item) =>
+        item.type === "video"
+          ? renderVideoTestimonial(item)
+          : renderWrittenTestimonial(item, container)
+      )
+      .join("");
+    container.dataset.itemCount = String(matches.length);
+    container.querySelectorAll("[data-testimonial-portrait]").forEach(setupTestimonialPortrait);
+    container.querySelectorAll("[data-testimonial-video]").forEach(setupTestimonialVideo);
+    updateCarouselControls(container);
+  });
+}
+
+async function loadTestimonials() {
+  if (!testimonialContainers.length) return;
+
+  try {
+    const response = await fetch("/api/testimonials");
+    if (!response.ok) throw new Error("Testimonials unavailable");
+    const payload = await response.json();
+    if (!payload.testimonials?.length) return;
+    renderDynamicTestimonials(payload.testimonials);
+  } catch (error) {
+    // Keep the curated HTML testimonials as a fallback.
+  }
+}
+
 enquiryTriggers.forEach((trigger) => {
   trigger.addEventListener("click", (event) => {
     const didOpen = openEnquiryModal(trigger.dataset.enquiryCourse);
@@ -720,15 +1001,72 @@ videoScrollButtons.forEach((button) => {
   });
 });
 
+function getCarouselStep(carousel) {
+  const firstItem = carousel.firstElementChild;
+  if (!firstItem) return carousel.clientWidth;
+
+  const styles = window.getComputedStyle(carousel);
+  const gap = Number.parseFloat(styles.columnGap || styles.gap) || 0;
+  return firstItem.getBoundingClientRect().width + gap;
+}
+
+function getCarouselControlButtons(carousel) {
+  return Array.from(carouselScrollButtons).filter(
+    (button) => button.dataset.carouselScroll === carousel.id
+  );
+}
+
+function updateCarouselControls(carousel) {
+  const buttons = getCarouselControlButtons(carousel);
+  if (!buttons.length) return;
+
+  const controls = buttons[0].closest(".testimonial-carousel-controls");
+  const maxScroll = Math.max(0, carousel.scrollWidth - carousel.clientWidth);
+  const hasOverflow = maxScroll > 4;
+
+  if (controls) controls.hidden = !hasOverflow;
+
+  buttons.forEach((button) => {
+    const isPrevious = button.dataset.direction !== "next";
+    button.disabled = !hasOverflow ||
+      (isPrevious ? carousel.scrollLeft <= 4 : carousel.scrollLeft >= maxScroll - 4);
+  });
+}
+
+const controlledCarousels = Array.from(
+  new Set(
+    Array.from(carouselScrollButtons)
+      .map((button) => document.getElementById(button.dataset.carouselScroll))
+      .filter(Boolean)
+  )
+);
+
 carouselScrollButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    const carousel = document.querySelector(`#${button.dataset.carouselScroll}`);
+    const carousel = document.getElementById(button.dataset.carouselScroll);
     if (!carousel) return;
 
     const direction = button.dataset.direction === "next" ? 1 : -1;
-    carousel.scrollBy({ left: direction * carousel.clientWidth * 0.85, behavior: "smooth" });
+    carousel.scrollBy({ left: direction * getCarouselStep(carousel), behavior: "smooth" });
   });
 });
+
+controlledCarousels.forEach((carousel) => {
+  carousel.dataset.itemCount = String(carousel.children.length);
+  let updateFrame;
+  carousel.addEventListener("scroll", () => {
+    window.cancelAnimationFrame(updateFrame);
+    updateFrame = window.requestAnimationFrame(() => updateCarouselControls(carousel));
+  }, { passive: true });
+});
+
+function updateAllCarouselControls() {
+  controlledCarousels.forEach(updateCarouselControls);
+}
+
+window.addEventListener("resize", updateAllCarouselControls);
+window.addEventListener("load", updateAllCarouselControls);
+window.requestAnimationFrame(updateAllCarouselControls);
 
 galleryScrollButtons.forEach((button) => {
   button.addEventListener("click", () => {
@@ -807,3 +1145,4 @@ loadInstagramFeed();
 loadResults();
 loadCommencements();
 loadGallery();
+loadTestimonials();

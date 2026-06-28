@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Content Admin | Edu Lead International</title>
+  <link rel="icon" href="assets/logo/edu-lead-logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <header class="admin-header">
+    <a class="admin-brand" href="index.html" aria-label="Return to Edu Lead International">
+      <img src="assets/logo/edu-lead-logo.svg" alt="">
+      <span><strong>Edu Lead</strong><small>Content administration</small></span>
+    </a>
+    <button class="admin-signout" type="button" data-signout hidden>Sign out</button>
+  </header>
+
+  <main class="admin-main">
+    <section class="admin-login" data-login-panel>
+      <p class="admin-kicker">Private administration</p>
+      <h1>Manage website content.</h1>
+      <p>Sign in with an invited administrator account.</p>
+      <form data-login-form>
+        <label>
+          Email
+          <input type="email" name="email" autocomplete="username" required>
+        </label>
+        <label>
+          Password
+          <input type="password" name="password" autocomplete="current-password" required>
+        </label>
+        <button type="submit">Sign in</button>
+      </form>
+      <p class="admin-message" data-login-message role="status"></p>
+    </section>
+
+    <section class="admin-dashboard" data-dashboard hidden>
+      <div class="admin-dashboard-heading">
+        <div>
+          <p class="admin-kicker">Website content</p>
+          <h1>Content dashboard</h1>
+          <p>Changes are saved immediately. Only published entries appear on the public website.</p>
+        </div>
+        <div class="admin-heading-actions">
+          <button type="button" class="admin-secondary-action" data-import-records>Import current data</button>
+          <button type="button" class="admin-primary-action" data-new-record>Add entry</button>
+        </div>
+      </div>
+
+      <nav class="admin-tabs" aria-label="Content type">
+        <button type="button" class="is-active" data-admin-tab="results">Results</button>
+        <button type="button" data-admin-tab="gallery">Gallery</button>
+        <button type="button" data-admin-tab="commencements">Commencement dates</button>
+        <button type="button" data-admin-tab="testimonials">Testimonials</button>
+      </nav>
+
+      <div class="admin-workspace">
+        <section class="admin-records" aria-live="polite">
+          <div class="admin-records-heading">
+            <div>
+              <h2 data-records-title>Results</h2>
+              <p data-records-description></p>
+            </div>
+            <span data-record-count></span>
+          </div>
+          <div class="admin-record-list" data-record-list></div>
+        </section>
+
+        <aside class="admin-editor" data-editor hidden>
+          <div class="admin-editor-heading">
+            <div>
+              <p class="admin-kicker" data-editor-kicker>New entry</p>
+              <h2 data-editor-title>Add result</h2>
+            </div>
+            <button type="button" class="admin-icon-button" data-close-editor aria-label="Close editor">&times;</button>
+          </div>
+          <form data-content-form></form>
+        </aside>
+      </div>
+
+      <p class="admin-message" data-dashboard-message role="status"></p>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.8/dist/umd/supabase.min.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

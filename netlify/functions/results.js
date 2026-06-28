@@ -1,3 +1,5 @@
+const { fetchSupabaseRows, usesSupabaseContent } = require("../lib/supabase");
+
 const CACHE_SECONDS = 60 * 60 * 6;
 const STALE_SECONDS = 60 * 60 * 24;
 
@@ -159,13 +161,42 @@ exports.handler = async function handler() {
     "Content-Type": "application/json"
   };
 
+  if (usesSupabaseContent()) {
+    const supabaseHeaders = {
+      ...headers,
+      "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300"
+    };
+    try {
+      const rows = await fetchSupabaseRows(
+        "results",
+        "?select=*&published=eq.true&order=sort_order.asc,name.asc"
+      );
+      const results = rows.map(normalizeRecord);
+      const grouped = groupRecords(results);
+
+      return {
+        statusCode: 200,
+        headers: supabaseHeaders,
+        body: JSON.stringify({
+          results,
+          groups: grouped.groups,
+          featured: grouped.featured,
+          configured: true,
+          source: "supabase"
+        })
+      };
+    } catch (error) {
+      console.warn("Supabase results unavailable; trying the configured sheet fallback.");
+    }
+  }
+
   const sheetUrl = normalizeSheetUrl(process.env.RESULTS_SHEET_CSV_URL || process.env.GOOGLE_SHEET_CSV_URL);
 
   if (!sheetUrl) {
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ results: [], groups: {}, featured: [], configured: false })
+      body: JSON.stringify({ results: [], groups: {}, featured: [], configured: false, source: "fallback" })
     };
   }
 
@@ -197,14 +228,15 @@ exports.handler = async function handler() {
         results,
         groups: grouped.groups,
         featured: grouped.featured,
-        configured: true
+        configured: true,
+        source: "google-sheet"
       })
     };
   } catch (error) {
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ results: [], groups: {}, featured: {}, configured: true })
+      body: JSON.stringify({ results: [], groups: {}, featured: {}, configured: true, source: "google-sheet" })
     };
   }
 };

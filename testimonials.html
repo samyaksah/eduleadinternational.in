@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Inter+Tight:wght@600;700;800;900&display=swap" rel="stylesheet">
     <link rel="icon" href="assets/logo/edu-lead-logo.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="styles.css?v=20260621-course-icon-assets">
+    <link rel="stylesheet" href="styles.css?v=20260627-flexible-testimonials">
   </head>
   <body>
     <header class="site-header">
@@ -30,11 +30,15 @@
           <p class="kicker">Written Testimonials</p>
           <h2>Stories from educators and school leaders.</h2>
         </div>
-        <div class="written-testimonial-grid">
-          <article class="written-testimonial-card"><div class="testimonial-person"><div class="person-photo">VT</div><div><strong>V. Meena Thripurasundari</strong><span>Head of Admissions & Marketing, The NEST School, Chennai</span></div></div><p>The Educational Leadership Course by Cambridge is by far the best training I have ever attended. It opened the educational realm in a complete 360 degree way and gave me practical insight into leadership.</p></article>
-          <article class="written-testimonial-card"><div class="testimonial-person"><div class="person-photo">HT</div><div><strong>Dr. Himani Tyagi</strong><span>Principal, Millennium School, Noida</span></div></div><p>The course surpassed my expectations. The facilitation ensured a proper structure, rich Cambridge resources, and insightful discussions.</p></article>
-          <article class="written-testimonial-card"><div class="testimonial-person"><div class="person-photo">IK</div><div><strong>Inderpal Kaur</strong><span>Principal, The Sanskruti English Medium School</span></div></div><p>The CIDEL course is a blend of vision, motivation, inspiration, and practical skills for an effective school leader.</p></article>
-          <article class="written-testimonial-card"><div class="testimonial-person"><div class="person-photo">RD</div><div><strong>Ria Dabas</strong><span>PRT English, Golaya Progressive Public School</span></div></div><p>CIDTL helped me understand the concepts behind different pedagogical methods and gave my work as a teacher an informed direction.</p></article>
+        <div class="testimonial-carousel-controls section-carousel-controls">
+          <button type="button" data-carousel-scroll="all-written-testimonials" data-direction="previous" aria-label="Previous written testimonials">&larr;</button>
+          <button type="button" data-carousel-scroll="all-written-testimonials" data-direction="next" aria-label="Next written testimonials">&rarr;</button>
+        </div>
+        <div class="written-testimonial-grid carousel-row" id="all-written-testimonials" data-testimonials-course="all" data-testimonials-type="written">
+          <article class="written-testimonial-card"><div class="testimonial-person"><div class="person-photo"><span aria-hidden="true">VT</span><img class="testimonial-portrait" data-testimonial-portrait data-src="assets/testimonials/portraits/v-meena-thripurasundari.jpg" alt="V. Meena Thripurasundari" hidden></div><div><strong>V. Meena Thripurasundari</strong><span>Head of Admissions & Marketing, The NEST School, Chennai</span></div></div><p>The Educational Leadership Course by Cambridge is by far the best training I have ever attended. It opened the educational realm in a complete 360 degree way and gave me practical insight into leadership.</p></article>
+          <article class="written-testimonial-card"><div class="testimonial-person"><div class="person-photo"><span aria-hidden="true">HT</span><img class="testimonial-portrait" data-testimonial-portrait data-src="assets/testimonials/portraits/himani-tyagi.jpg" alt="Dr. Himani Tyagi" hidden></div><div><strong>Dr. Himani Tyagi</strong><span>Principal, Millennium School, Noida</span></div></div><p>The course surpassed my expectations. The facilitation ensured a proper structure, rich Cambridge resources, and insightful discussions.</p></article>
+          <article class="written-testimonial-card"><div class="testimonial-person"><div class="person-photo"><span aria-hidden="true">IK</span><img class="testimonial-portrait" data-testimonial-portrait data-src="assets/testimonials/portraits/inderpal-kaur.jpg" alt="Inderpal Kaur" hidden></div><div><strong>Inderpal Kaur</strong><span>Principal, The Sanskruti English Medium School</span></div></div><p>The CIDEL course is a blend of vision, motivation, inspiration, and practical skills for an effective school leader.</p></article>
+          <article class="written-testimonial-card"><div class="testimonial-person"><div class="person-photo"><span aria-hidden="true">RD</span><img class="testimonial-portrait" data-testimonial-portrait data-src="assets/testimonials/portraits/ria-dabas.jpg" alt="Ria Dabas" hidden></div><div><strong>Ria Dabas</strong><span>PRT English, Golaya Progressive Public School</span></div></div><p>CIDTL helped me understand the concepts behind different pedagogical methods and gave my work as a teacher an informed direction.</p></article>
         </div>
       </section>
 
@@ -44,7 +48,11 @@
           <h2>Hear the experience directly.</h2>
           <p>Video testimonial links can be replaced with the final graduate videos when they are ready.</p>
         </div>
-        <div class="video-testimonial-grid">
+        <div class="testimonial-carousel-controls section-carousel-controls">
+          <button type="button" data-carousel-scroll="all-video-testimonials" data-direction="previous" aria-label="Previous video testimonials">&larr;</button>
+          <button type="button" data-carousel-scroll="all-video-testimonials" data-direction="next" aria-label="Next video testimonials">&rarr;</button>
+        </div>
+        <div class="video-testimonial-grid carousel-row" id="all-video-testimonials" data-testimonials-course="all" data-testimonials-type="video">
           <article class="video-testimonial-card"><div class="local-video-placeholder"><span>Video testimonial</span></div><div><h3>V. Meena Thripurasundari</h3><p>Head of Admissions & Marketing, The NEST School</p></div></article>
           <article class="video-testimonial-card"><div class="local-video-placeholder"><span>Video testimonial</span></div><div><h3>Dr. Himani Tyagi</h3><p>Principal, Millennium School, Noida</p></div></article>
           <article class="video-testimonial-card"><div class="local-video-placeholder"><span>Video testimonial</span></div><div><h3>Inderpal Kaur</h3><p>Principal, The Sanskruti English Medium School</p></div></article>
@@ -52,6 +60,6 @@
       </section>
     </main>
     <footer class="site-footer"><div class="footer-main"><div class="footer-brand"><a class="brand" href="index.html" aria-label="Edu Lead International home"><span class="brand-mark"><img class="brand-logo" src="assets/logo/edu-lead-logo.svg" alt="" aria-hidden="true"></span><span class="brand-text"><strong>Edu Lead</strong><span>International</span></span></a><p>Cambridge-accredited professional development for teachers, school leaders, and institutions.</p></div><nav aria-label="Footer quick links"><h3>Explore</h3><a href="about.html">About Us</a><a href="courses.html">Courses</a><a href="results.html">Results</a></nav><nav aria-label="Footer programmes"><h3>Programmes</h3><a href="teaching-learning.html">Teaching & Learning</a><a href="educational-leadership.html">Educational Leadership</a><a href="cpd-online.html">CPD Online</a><a href="certified-training.html">Certified Training</a></nav><div class="footer-contact"><h3>Contact</h3><a href="tel:+918800542932">+91 8800542932</a><a href="mailto:contact@eduleadinternational.in">contact@eduleadinternational.in</a><p>Greater Noida West, Uttar Pradesh, India</p></div></div><div class="footer-bottom"><span>Copyright &copy; 2026 Edu Lead International.</span><a href="contact.html">Send Enquiry</a></div></footer>
-    <script src="script.js"></script>
+    <script src="script.js?v=20260627-supabase-cms"></script>
   </body>
 </html>

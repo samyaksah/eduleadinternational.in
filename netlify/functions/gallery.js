@@ -1,3 +1,5 @@
+const { fetchSupabaseRows, usesSupabaseContent } = require("../lib/supabase");
+
 const CACHE_SECONDS = 60 * 60 * 6;
 const STALE_SECONDS = 60 * 60 * 24;
 
@@ -93,13 +95,35 @@ exports.handler = async function handler() {
     "Content-Type": "application/json"
   };
 
+  if (usesSupabaseContent()) {
+    const supabaseHeaders = {
+      ...headers,
+      "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300"
+    };
+    try {
+      const rows = await fetchSupabaseRows(
+        "gallery_items",
+        "?select=*&published=eq.true&order=sort_order.asc,created_at.asc"
+      );
+      const gallery = rows.map(normalizeRecord);
+
+      return {
+        statusCode: 200,
+        headers: supabaseHeaders,
+        body: JSON.stringify({ gallery, configured: true, source: "supabase" })
+      };
+    } catch (error) {
+      console.warn("Supabase gallery unavailable; trying the configured sheet fallback.");
+    }
+  }
+
   const sheetUrl = normalizeSheetUrl(process.env.GALLERY_SHEET_CSV_URL);
 
   if (!sheetUrl) {
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ gallery: [], configured: false })
+      body: JSON.stringify({ gallery: [], configured: false, source: "fallback" })
     };
   }
 
@@ -125,13 +149,13 @@ exports.handler = async function handler() {
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ gallery, configured: true })
+      body: JSON.stringify({ gallery, configured: true, source: "google-sheet" })
     };
   } catch (error) {
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ gallery: [], configured: true })
+      body: JSON.stringify({ gallery: [], configured: true, source: "google-sheet" })
     };
   }
 };

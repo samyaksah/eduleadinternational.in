@@ -2,6 +2,11 @@
   publish = "."
 
 [[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+
+[[redirects]]
   from = "/api/instagram"
   to = "/.netlify/functions/instagram"
   status = 200
@@ -20,3 +25,23 @@
   from = "/api/gallery"
   to = "/.netlify/functions/gallery"
   status = 200
+
+[[redirects]]
+  from = "/api/testimonials"
+  to = "/.netlify/functions/testimonials"
+  status = 200
+
+[[redirects]]
+  from = "/api/supabase-config"
+  to = "/.netlify/functions/supabase-config"
+  status = 200
+
+[[headers]]
+  for = "/admin.html"
+  [headers.values]
+    Cache-Control = "no-store"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data: https://*.supabase.co; media-src 'self' blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+    Referrer-Policy = "no-referrer"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    X-Robots-Tag = "noindex, nofollow"

@@ -1,3 +1,5 @@
+const { fetchSupabaseRows, usesSupabaseContent } = require("../lib/supabase");
+
 const CACHE_SECONDS = 60 * 60 * 12;
 const STALE_SECONDS = 60 * 60 * 24;
 
@@ -100,11 +102,62 @@ function normalizeRecord(row) {
   };
 }
 
+function formatDatabaseDate(value) {
+  const rawValue = String(value || "").trim();
+  if (!rawValue) return "";
+
+  const date = new Date(`${rawValue.slice(0, 10)}T00:00:00Z`);
+  if (Number.isNaN(date.getTime())) return rawValue;
+
+  return new Intl.DateTimeFormat("en", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC"
+  }).format(date);
+}
+
 exports.handler = async function handler() {
   const headers = {
     "Cache-Control": `public, s-maxage=${CACHE_SECONDS}, stale-while-revalidate=${STALE_SECONDS}`,
     "Content-Type": "application/json"
   };
+
+  if (usesSupabaseContent()) {
+    const supabaseHeaders = {
+      ...headers,
+      "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300"
+    };
+    try {
+      const rows = await fetchSupabaseRows(
+        "commencement_dates",
+        "?select=*&published=eq.true&order=sort_order.asc,course.asc"
+      );
+      const commencements = rows.map((row) =>
+        normalizeRecord({
+          ...row,
+          commencement_date: row.display_date || formatDatabaseDate(row.commencement_date)
+        })
+      );
+      const byCourse = commencements.reduce((records, record) => {
+        if (!records[record.courseGroup]) records[record.courseGroup] = record;
+        return records;
+      }, {});
+
+      return {
+        statusCode: 200,
+        headers: supabaseHeaders,
+        body: JSON.stringify({
+          commencements,
+          byCourse,
+          configured: true,
+          source: "supabase"
+        })
+      };
+    } catch (error) {
+      console.warn("Supabase commencement dates unavailable; trying the configured sheet fallback.");
+    }
+  }
 
   const sheetUrl = normalizeSheetUrl(process.env.COMMENCEMENTS_SHEET_CSV_URL);
 
@@ -112,7 +165,7 @@ exports.handler = async function handler() {
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ commencements: [], byCourse: {}, configured: false })
+      body: JSON.stringify({ commencements: [], byCourse: {}, configured: false, source: "fallback" })
     };
   }
 
@@ -143,13 +196,13 @@ exports.handler = async function handler() {
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ commencements, byCourse, configured: true })
+      body: JSON.stringify({ commencements, byCourse, configured: true, source: "google-sheet" })
     };
   } catch (error) {
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ commencements: [], byCourse: {}, configured: true })
+      body: JSON.stringify({ commencements: [], byCourse: {}, configured: true, source: "google-sheet" })
     };
   }
 };

@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Inter+Tight:wght@600;700;800;900&display=swap" rel="stylesheet">
     <link rel="icon" href="assets/logo/edu-lead-logo.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="styles.css?v=20260621-course-icon-assets">
+    <link rel="stylesheet" href="styles.css?v=20260627-flexible-testimonials">
   </head>
   <body>
     <header class="site-header"><a class="brand" href="index.html" aria-label="Edu Lead International home"><span class="brand-mark"><img class="brand-logo" src="assets/logo/edu-lead-logo.svg" alt="" aria-hidden="true"></span><span class="brand-text"><strong>Edu Lead</strong><span>International</span></span></a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span></span><span></span></button><nav class="site-nav" id="site-nav"><a href="index.html">Home</a><a href="about.html">About Us</a><a href="courses.html" aria-current="page">Courses</a><a href="results.html">Results</a><a href="gallery.html">Gallery</a><a href="faq.html">FAQ</a><a class="mobile-nav-cta" href="contact.html">Contact Us</a></nav><a class="header-cta" href="contact.html">Contact Us</a></header>
@@ -213,23 +213,45 @@
         <div class="section-header centered">
           <p class="kicker">Student Testimonials</p>
           <h2>Reflections from Teaching and Learning candidates.</h2>
-          <p>These can be replaced with final student photographs and full testimonials as you share them.</p>
+          <p>Hear how educators have connected programme learning with reflective classroom practice.</p>
         </div>
-        <div class="student-testimonial-grid">
+        <div class="testimonial-carousel-controls section-carousel-controls">
+          <button type="button" data-carousel-scroll="teaching-learning-testimonials" data-direction="previous" aria-label="Previous Teaching and Learning testimonials">&larr;</button>
+          <button type="button" data-carousel-scroll="teaching-learning-testimonials" data-direction="next" aria-label="Next Teaching and Learning testimonials">&rarr;</button>
+        </div>
+        <div class="student-testimonial-grid carousel-row" id="teaching-learning-testimonials" data-testimonials-course="teaching-learning" data-testimonials-type="written">
           <article>
-            <div class="student-avatar">RD</div>
+            <div class="student-avatar">
+              <span aria-hidden="true">RD</span>
+              <img class="testimonial-portrait" data-testimonial-portrait data-src="assets/testimonials/portraits/ria-dabas.jpg" alt="Ria Dabas" hidden>
+            </div>
             <p>CIDTL helped me understand the concepts behind different pedagogical methods and gave my work as a teacher an informed direction.</p>
             <strong>Ria Dabas</strong>
             <span>PRT English, Golaya Progressive Public School</span>
           </article>
           <article>
-            <div class="student-avatar">MS</div>
+            <div class="student-avatar">
+              <span aria-hidden="true">MS</span>
+              <img class="testimonial-portrait" data-testimonial-portrait data-src="assets/testimonials/portraits/munmun-sengupta.jpg" alt="Munmun Sengupta" hidden>
+            </div>
             <p>The programme supported reflective thinking and helped connect teaching strategies with meaningful classroom practice.</p>
             <strong>Munmun Sengupta</strong>
             <span>Academic Head (Sr. School), DPS Varanasi</span>
           </article>
           <article>
-            <div class="student-avatar">GC</div>
+            <div class="student-avatar">
+              <span aria-hidden="true">GC</span>
+              <img class="testimonial-portrait" data-testimonial-portrait data-src="assets/testimonials/portraits/gargi-chhabra.jpg" alt="Gargi Chhabra" hidden>
+            </div>
+            <p>The learning experience encouraged deeper engagement with teaching principles and practical application in school contexts.</p>
+            <strong>Gargi Chhabra</strong>
+            <span>Cambridge Administrator, DAV Model School</span>
+          </article>
+          <article>
+            <div class="student-avatar">
+              <span aria-hidden="true">GC</span>
+              <img class="testimonial-portrait" data-testimonial-portrait data-src="assets/testimonials/portraits/gargi-chhabra.jpg" alt="Gargi Chhabra" hidden>
+            </div>
             <p>The learning experience encouraged deeper engagement with teaching principles and practical application in school contexts.</p>
             <strong>Gargi Chhabra</strong>
             <span>Cambridge Administrator, DAV Model School</span>
@@ -283,6 +305,6 @@
     </div>
 
     <footer class="site-footer"><div class="footer-main"><div class="footer-brand"><a class="brand" href="index.html" aria-label="Edu Lead International home"><span class="brand-mark"><img class="brand-logo" src="assets/logo/edu-lead-logo.svg" alt="" aria-hidden="true"></span><span class="brand-text"><strong>Edu Lead</strong><span>International</span></span></a><p>Cambridge-accredited professional development for teachers, school leaders, and institutions.</p></div><nav aria-label="Footer quick links"><h3>Explore</h3><a href="about.html">About Us</a><a href="courses.html">Courses</a><a href="results.html">Results</a></nav><nav aria-label="Footer programmes"><h3>Programmes</h3><a href="teaching-learning.html">Teaching & Learning</a><a href="educational-leadership.html">Educational Leadership</a><a href="cpd-online.html">CPD Online</a><a href="certified-training.html">Certified Training</a></nav><div class="footer-contact"><h3>Contact</h3><a href="tel:+918800542932">+91 8800542932</a><a href="mailto:contact@eduleadinternational.in">contact@eduleadinternational.in</a><p>Greater Noida West, Uttar Pradesh, India</p></div></div><div class="footer-bottom"><span>Copyright &copy; 2026 Edu Lead International.</span><a href="contact.html">Send Enquiry</a></div></footer>
-    <script src="script.js?v=20260620-commencements-sheet"></script>
+    <script src="script.js?v=20260627-supabase-cms"></script>
   </body>
 </html>
