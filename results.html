@@ -15,6 +15,7 @@
     <meta property="og:description" content="Celebrating educators and school leaders who achieved distinction in Edu Lead International Cambridge PDQ programmes.">
     <meta property="og:url" content="https://eduleadinternational.in/results.html">
     <meta property="og:image" content="https://eduleadinternational.in/assets/hero/image-1.jpeg">
+    <meta property="og:image:alt" content="Edu Lead International Cambridge PDQ distinction holders">
     <meta name="twitter:card" content="summary_large_image">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,13 +25,24 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "CollectionPage",
-      "name": "Edu Lead International Cambridge PDQ distinction holders",
-      "url": "https://eduleadinternational.in/results.html",
-      "description": "Distinction holders from Cambridge Teaching and Learning and Educational Leadership professional development qualifications.",
-      "isPartOf": {"@id": "https://eduleadinternational.in/#website"},
-      "about": {"@id": "https://eduleadinternational.in/#organization"},
-      "inLanguage": "en"
+      "@graph": [
+        {
+          "@type": "CollectionPage",
+          "name": "Edu Lead International Cambridge PDQ distinction holders",
+          "url": "https://eduleadinternational.in/results.html",
+          "description": "Distinction holders from Cambridge Teaching and Learning and Educational Leadership professional development qualifications.",
+          "isPartOf": {"@id": "https://eduleadinternational.in/#website"},
+          "about": {"@id": "https://eduleadinternational.in/#organization"},
+          "inLanguage": "en"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://eduleadinternational.in/"},
+            {"@type": "ListItem", "position": 2, "name": "Results", "item": "https://eduleadinternational.in/results.html"}
+          ]
+        }
+      ]
     }
     </script>
   </head>

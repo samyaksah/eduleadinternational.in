@@ -33,6 +33,25 @@
     ["other", "Other"]
   ];
 
+  const COMMENCEMENT_COURSES = {
+    teachingLearning: {
+      name: "Teaching and Learning",
+      url: "teaching-learning.html"
+    },
+    educationalLeadership: {
+      name: "Educational Leadership",
+      url: "educational-leadership.html"
+    },
+    cpdOnline: {
+      name: "CPD Online",
+      url: "cpd-online.html"
+    },
+    certifiedTraining: {
+      name: "Certified Training",
+      url: "certified-training.html"
+    }
+  };
+
   const schemas = {
     results: {
       table: "results",
@@ -75,12 +94,21 @@
       singular: "commencement date",
       description: "Upcoming cohort dates used across the website.",
       fields: [
-        { name: "course", label: "Course name", required: true },
-        { name: "course_group", label: "Course", type: "select", options: COURSE_OPTIONS, required: true },
-        { name: "commencement_date", label: "Date", type: "date" },
-        { name: "display_date", label: "Displayed date", placeholder: "July 24, 2026" },
-        { name: "label", label: "Label", default: "New Cohort Commencement Date" },
-        { name: "url", label: "Course page URL", placeholder: "teaching-learning.html" },
+        {
+          name: "course_group",
+          label: "Course",
+          type: "select",
+          options: COURSE_OPTIONS.slice(0, 4),
+          required: true,
+          help: "The course name and page link are filled in automatically."
+        },
+        {
+          name: "commencement_date",
+          label: "Commencement date",
+          type: "date",
+          required: true,
+          help: "This date is formatted automatically everywhere it appears on the website."
+        },
         { name: "published", label: "Published", type: "checkbox" },
         { name: "sort_order", label: "Display order", type: "number", default: 100 }
       ]
@@ -104,13 +132,13 @@
         { name: "designation", label: "Designation" },
         { name: "school", label: "School" },
         { name: "city", label: "City" },
-        { name: "quote", label: "Testimonial", type: "textarea" },
-        { name: "portrait_url", label: "Portrait URL", type: "url" },
-        { name: "portrait_upload", label: "Upload portrait", type: "file", accept: "image/jpeg,image/png,image/webp", target: "portrait_url", folder: "testimonials/portraits" },
-        { name: "video_url", label: "Video URL", type: "url" },
-        { name: "video_upload", label: "Upload video", type: "file", accept: "video/mp4,video/webm", target: "video_url", folder: "testimonials/videos" },
-        { name: "video_thumbnail_url", label: "Video thumbnail URL", type: "url" },
-        { name: "thumbnail_upload", label: "Upload video thumbnail", type: "file", accept: "image/jpeg,image/png,image/webp", target: "video_thumbnail_url", folder: "testimonials/thumbnails" },
+        { name: "quote", label: "Testimonial", type: "textarea", testimonialTypes: ["written"] },
+        { name: "portrait_url", label: "Portrait URL", type: "url", testimonialTypes: ["written"] },
+        { name: "portrait_upload", label: "Upload portrait", type: "file", accept: "image/jpeg,image/png,image/webp", target: "portrait_url", folder: "testimonials/portraits", testimonialTypes: ["written"] },
+        { name: "video_url", label: "Video URL", type: "url", testimonialTypes: ["video"] },
+        { name: "video_upload", label: "Upload video", type: "file", accept: "video/mp4,video/webm", target: "video_url", folder: "testimonials/videos", testimonialTypes: ["video"] },
+        { name: "video_thumbnail_url", label: "Video thumbnail URL", type: "url", testimonialTypes: ["video"] },
+        { name: "thumbnail_upload", label: "Upload video thumbnail", type: "file", accept: "image/jpeg,image/png,image/webp", target: "video_thumbnail_url", folder: "testimonials/thumbnails", testimonialTypes: ["video"] },
         { name: "published", label: "Published", type: "checkbox" },
         { name: "sort_order", label: "Display order", type: "number", default: 100 }
       ]
@@ -199,6 +227,16 @@
   function formatDate(value) {
     if (!value) return "";
     return new Intl.DateTimeFormat("en", { dateStyle: "medium" }).format(new Date(value));
+  }
+
+  function formatCommencementDate(value) {
+    if (!value) return null;
+    return new Intl.DateTimeFormat("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+      timeZone: "UTC"
+    }).format(new Date(`${value}T00:00:00Z`));
   }
 
   function getRecordTitle(record) {
@@ -486,6 +524,9 @@
     if (field.type === "checkbox") {
       const label = document.createElement("label");
       label.className = "admin-checkbox";
+      if (field.testimonialTypes) {
+        label.dataset.testimonialTypes = field.testimonialTypes.join(",");
+      }
       const input = document.createElement("input");
       input.type = "checkbox";
       input.name = field.name;
@@ -496,6 +537,9 @@
 
     const label = document.createElement("label");
     label.textContent = field.label;
+    if (field.testimonialTypes) {
+      label.dataset.testimonialTypes = field.testimonialTypes.join(",");
+    }
     let input;
 
     if (field.type === "textarea") {
@@ -541,7 +585,21 @@
       input.value = value;
     }
     label.appendChild(input);
+    if (field.help) {
+      const help = document.createElement("small");
+      help.textContent = field.help;
+      label.appendChild(help);
+    }
     return label;
+  }
+
+  function updateTestimonialEditorFields() {
+    if (currentType !== "testimonials") return;
+    const selectedType = contentForm.elements.testimonial_type?.value || "written";
+
+    contentForm.querySelectorAll("[data-testimonial-types]").forEach((field) => {
+      field.hidden = !field.dataset.testimonialTypes.split(",").includes(selectedType);
+    });
   }
 
   function openEditor(record = null) {
@@ -554,6 +612,14 @@
     contentForm.replaceChildren();
 
     schema.fields.forEach((field) => contentForm.appendChild(createField(field, record)));
+
+    if (currentType === "testimonials") {
+      contentForm.elements.testimonial_type?.addEventListener(
+        "change",
+        updateTestimonialEditorFields
+      );
+      updateTestimonialEditorFields();
+    }
 
     const actions = document.createElement("div");
     actions.className = "admin-form-actions";
@@ -631,6 +697,24 @@
         values[field.name] = input.value.trim() || null;
       }
     });
+
+    if (currentType === "commencements") {
+      const course = COMMENCEMENT_COURSES[values.course_group];
+      values.course = course?.name || null;
+      values.display_date = formatCommencementDate(values.commencement_date);
+      values.label = "New Cohort Commencement Date";
+      values.url = course?.url || null;
+    }
+
+    if (currentType === "testimonials") {
+      if (values.testimonial_type === "written") {
+        values.video_url = null;
+        values.video_thumbnail_url = null;
+      } else {
+        values.quote = null;
+        values.portrait_url = null;
+      }
+    }
 
     return values;
   }

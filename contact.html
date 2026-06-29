@@ -15,6 +15,7 @@
     <meta property="og:description" content="Enquire about Cambridge PDQs, online CPD, or customised professional development for your school.">
     <meta property="og:url" content="https://eduleadinternational.in/contact.html">
     <meta property="og:image" content="https://eduleadinternational.in/assets/hero/image-1.jpeg">
+    <meta property="og:image:alt" content="Edu Lead International teacher professional development">
     <meta name="twitter:card" content="summary_large_image">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,16 +25,23 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "ContactPage",
-      "name": "Contact Edu Lead International",
-      "url": "https://eduleadinternational.in/contact.html",
-      "about": {
-        "@id": "https://eduleadinternational.in/#organization"
-      },
-      "mainEntity": {
-        "@id": "https://eduleadinternational.in/#organization"
-      },
-      "inLanguage": "en"
+      "@graph": [
+        {
+          "@type": "ContactPage",
+          "name": "Contact Edu Lead International",
+          "url": "https://eduleadinternational.in/contact.html",
+          "about": {"@id": "https://eduleadinternational.in/#organization"},
+          "mainEntity": {"@id": "https://eduleadinternational.in/#organization"},
+          "inLanguage": "en"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://eduleadinternational.in/"},
+            {"@type": "ListItem", "position": 2, "name": "Contact", "item": "https://eduleadinternational.in/contact.html"}
+          ]
+        }
+      ]
     }
     </script>
   </head>

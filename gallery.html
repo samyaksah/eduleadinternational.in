@@ -15,6 +15,7 @@
     <meta property="og:description" content="Workshops, seminars, mentoring sessions, and educator professional development in action.">
     <meta property="og:url" content="https://eduleadinternational.in/gallery.html">
     <meta property="og:image" content="https://eduleadinternational.in/assets/hero/image-3.jpg">
+    <meta property="og:image:alt" content="Educators participating in an Edu Lead International training programme">
     <meta name="twitter:card" content="summary_large_image">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,13 +25,24 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "CollectionPage",
-      "name": "Edu Lead International training gallery",
-      "url": "https://eduleadinternational.in/gallery.html",
-      "description": "Images from teacher training workshops, school seminars, mentoring sessions, and professional development programmes.",
-      "isPartOf": {"@id": "https://eduleadinternational.in/#website"},
-      "about": {"@id": "https://eduleadinternational.in/#organization"},
-      "inLanguage": "en"
+      "@graph": [
+        {
+          "@type": "CollectionPage",
+          "name": "Edu Lead International training gallery",
+          "url": "https://eduleadinternational.in/gallery.html",
+          "description": "Images from teacher training workshops, school seminars, mentoring sessions, and professional development programmes.",
+          "isPartOf": {"@id": "https://eduleadinternational.in/#website"},
+          "about": {"@id": "https://eduleadinternational.in/#organization"},
+          "inLanguage": "en"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://eduleadinternational.in/"},
+            {"@type": "ListItem", "position": 2, "name": "Gallery", "item": "https://eduleadinternational.in/gallery.html"}
+          ]
+        }
+      ]
     }
     </script>
   </head>

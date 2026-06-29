@@ -1001,10 +1001,54 @@ function testimonialsForContainer(items, container) {
   });
 }
 
+function setTestimonialContainerState(container, hasTestimonials) {
+  container.hidden = !hasTestimonials;
+  container.dataset.itemCount = hasTestimonials
+    ? container.dataset.itemCount || "0"
+    : "0";
+
+  if (container.id) {
+    document
+      .querySelectorAll(`[data-carousel-scroll="${container.id}"]`)
+      .forEach((button) => {
+        const controls = button.closest(".testimonial-carousel-controls, .section-carousel-controls");
+        if (controls) controls.hidden = !hasTestimonials;
+      });
+  }
+}
+
+function updateTestimonialSectionVisibility() {
+  const sections = new Set(
+    Array.from(testimonialContainers)
+      .map((container) => container.closest("section"))
+      .filter(Boolean)
+  );
+
+  sections.forEach((section) => {
+    const containers = section.querySelectorAll(
+      "[data-testimonials-course][data-testimonials-type]"
+    );
+    const hasTestimonials = Array.from(containers).some(
+      (container) => !container.hidden
+    );
+
+    section.hidden = !hasTestimonials;
+    if (!section.id) return;
+
+    document.querySelectorAll(`a[href="#${section.id}"]`).forEach((link) => {
+      link.hidden = !hasTestimonials;
+    });
+  });
+}
+
 function renderDynamicTestimonials(items) {
   testimonialContainers.forEach((container) => {
     const matches = testimonialsForContainer(items, container);
-    if (!matches.length) return;
+    if (!matches.length) {
+      container.innerHTML = "";
+      setTestimonialContainerState(container, false);
+      return;
+    }
 
     container.innerHTML = matches
       .map((item) =>
@@ -1014,11 +1058,14 @@ function renderDynamicTestimonials(items) {
       )
       .join("");
     container.dataset.itemCount = String(matches.length);
+    setTestimonialContainerState(container, true);
     container.querySelectorAll("[data-testimonial-portrait]").forEach(setupTestimonialPortrait);
     container.querySelectorAll("[data-testimonial-video]").forEach(setupTestimonialVideo);
     requestAnimationFrame(() => initializeTestimonialReadMore(container));
     updateCarouselControls(container);
   });
+
+  updateTestimonialSectionVisibility();
 }
 
 async function loadTestimonials() {
@@ -1028,8 +1075,9 @@ async function loadTestimonials() {
     const response = await fetch("/api/testimonials");
     if (!response.ok) throw new Error("Testimonials unavailable");
     const payload = await response.json();
-    if (!payload.testimonials?.length) return;
-    renderDynamicTestimonials(payload.testimonials);
+    if (payload.error) throw new Error(payload.error);
+    if (!payload.configured) return;
+    renderDynamicTestimonials(payload.testimonials || []);
   } catch (error) {
     // Keep the curated HTML testimonials as a fallback.
   }

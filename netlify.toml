@@ -6,6 +6,87 @@
   to = "/"
   status = 301
 
+# Preserve search equity and backlinks from the previous WordPress website.
+[[redirects]]
+  from = "/about-us/"
+  to = "/about.html"
+  status = 301
+
+[[redirects]]
+  from = "/our-courses/"
+  to = "/courses.html"
+  status = 301
+
+[[redirects]]
+  from = "/cambridge-international-certificate-2/"
+  to = "/teaching-learning.html"
+  status = 301
+
+[[redirects]]
+  from = "/cambridge-international-certificate-diploma-in-educational-leadership/"
+  to = "/educational-leadership.html"
+  status = 301
+
+[[redirects]]
+  from = "/cpd-online-programme/"
+  to = "/cpd-online.html"
+  status = 301
+
+[[redirects]]
+  from = "/certified-training-programmes-2/"
+  to = "/certified-training.html"
+  status = 301
+
+[[redirects]]
+  from = "/distinction-holder/"
+  to = "/results.html"
+  status = 301
+
+[[redirects]]
+  from = "/gallery/"
+  to = "/gallery.html"
+  status = 301
+
+[[redirects]]
+  from = "/testimonials/"
+  to = "/#written-testimonials"
+  status = 301
+
+[[redirects]]
+  from = "/contact-us/"
+  to = "/contact.html"
+  status = 301
+
+[[redirects]]
+  from = "/trainers/"
+  to = "/about.html"
+  status = 301
+
+[[redirects]]
+  from = "/rupa-chakravarty-qea/"
+  to = "/about.html"
+  status = 301
+
+[[redirects]]
+  from = "/news-and-event/"
+  to = "/gallery.html"
+  status = 301
+
+[[redirects]]
+  from = "/newwebsite/wp-content/pdfuploads/cidel.pdf"
+  to = "/educational-leadership.html"
+  status = 301
+
+[[redirects]]
+  from = "/newwebsite/wp-content/pdfuploads/Edulead_International_Certificate_in_Educational_Leadership.pdf"
+  to = "/educational-leadership.html"
+  status = 301
+
+[[redirects]]
+  from = "/newwebsite/wp-content/pdfuploads/CIDTL_2025.pdf"
+  to = "/teaching-learning.html"
+  status = 301
+
 [[redirects]]
   from = "/admin"
   to = "/admin.html"
@@ -54,6 +135,21 @@
     Referrer-Policy = "no-referrer"
     X-Content-Type-Options = "nosniff"
     X-Frame-Options = "DENY"
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/admin"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/.netlify/functions/*"
+  [headers.values]
     X-Robots-Tag = "noindex, nofollow"
 
 [[headers]]
